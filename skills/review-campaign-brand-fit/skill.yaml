@@ -1,0 +1,25 @@
+id: review-campaign-brand-fit
+version: "0.1.0"
+purpose: Review campaign content for tone, coherence, claims, and brand dilution risk.
+inputs:
+  type: object
+  required: [content_package, message_architecture]
+  properties:
+    content_package: {type: object}
+    message_architecture: {type: object}
+outputs:
+  type: object
+  required: [fit, issues, required_changes]
+  properties:
+    fit: {type: string}
+    issues: {type: array, items: {type: string}}
+    required_changes: {type: array, items: {type: string}}
+context: [Brand/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: medium
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: true
