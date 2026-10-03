@@ -1,0 +1,30 @@
+id: design-watch-concept
+version: "0.1.0"
+purpose: Create a technically coherent Amaux Bozé watch concept from a brief and evidence pack.
+inputs:
+  type: object
+  required: [product_brief, evidence_pack]
+  properties:
+    product_brief: {type: object}
+    evidence_pack: {type: object}
+outputs:
+  type: object
+  required: [concept_name, movement, case_direction, dial_direction, feasibility_notes]
+  properties:
+    concept_name: {type: string}
+    movement: {type: string}
+    case_direction: {type: string}
+    dial_direction: {type: string}
+    feasibility_notes: {type: array, items: {type: string}}
+context:
+  - Products/
+  - Brand/
+allowed_tools:
+  - obsidian.read
+model:
+  privacy: standard
+  reasoning: high
+  creativity: high
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: false
