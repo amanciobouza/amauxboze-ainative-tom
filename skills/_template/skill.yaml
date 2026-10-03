@@ -1,0 +1,25 @@
+id: example-skill
+version: "0.1.0"
+purpose: Describe what this skill does.
+
+inputs:
+  type: object
+  required: []
+  properties: {}
+
+outputs:
+  type: object
+  required: []
+  properties: {}
+
+context: []
+allowed_tools: []
+
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: medium
+  coding: false
+  preferred_providers: []
+
+approval_required: false
