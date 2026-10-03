@@ -1,0 +1,23 @@
+id: classify-feedback-signal
+version: "0.1.0"
+purpose: Classify structured customer feedback into an explicit category.
+inputs:
+  type: object
+  required: [observation]
+  properties:
+    observation: {type: object}
+outputs:
+  type: object
+  required: [category, confidence]
+  properties:
+    category: {type: string}
+    confidence: {type: number}
+context: [Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
