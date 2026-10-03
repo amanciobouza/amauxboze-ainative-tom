@@ -1,0 +1,26 @@
+id: capture-market-observations
+version: "0.1.0"
+purpose: Convert evidence into immutable source-backed observations.
+inputs:
+  type: object
+  required: [evidence_pack, geography]
+  properties:
+    evidence_pack: {type: object}
+    geography: {type: string}
+outputs:
+  type: object
+  required: [observations]
+  properties:
+    observations:
+      type: array
+      items:
+        type: object
+context: [Research/]
+allowed_tools: [obsidian.read, obsidian.write]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
