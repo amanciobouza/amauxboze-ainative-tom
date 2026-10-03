@@ -71,7 +71,7 @@ def build_product_launch_workflow(deps: ProductLaunchDependencies):
     def persist_artifact(state: ProductLaunchState, *, artifact_type: str, agent: str, skill: str, content: dict[str, Any]):
         if deps.persistence is None:
             return
-        deps.authorization.authorize_tool(agent, "obsidian", mode="write")
+        deps.policy.authorize_tool(ToolRequest(agent_id=agent, skill_id=skill, tool_name="obsidian", mode="write"))
         deps.persistence.persist_artifact(
             workflow_id=state["workflow_id"],
             artifact_type=artifact_type,
