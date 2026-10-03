@@ -1,0 +1,26 @@
+id: review-customer-fit
+version: "0.1.0"
+purpose: Assess a watch concept from the customer and community perspective.
+inputs:
+  type: object
+  required: [concept]
+  properties:
+    concept: {type: object}
+outputs:
+  type: object
+  required: [relevance, objections, misunderstandings]
+  properties:
+    relevance: {type: string}
+    objections: {type: array, items: {type: string}}
+    misunderstandings: {type: array, items: {type: string}}
+context:
+  - Customers/
+allowed_tools:
+  - obsidian.read
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
