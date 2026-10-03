@@ -1,0 +1,25 @@
+id: interpret-product-impact
+version: "0.1.0"
+purpose: Interpret market signals from a product and watch-design perspective.
+inputs:
+  type: object
+  required: [pattern_analysis, observations]
+  properties:
+    pattern_analysis: {type: object}
+    observations: {type: object}
+outputs:
+  type: object
+  required: [implications, risks, opportunities]
+  properties:
+    implications: {type: array, items: {type: string}}
+    risks: {type: array, items: {type: string}}
+    opportunities: {type: array, items: {type: string}}
+context: [Products/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: medium
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: false
