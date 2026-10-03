@@ -3,6 +3,7 @@ from pathlib import Path
 from langgraph.types import Command
 
 from amauxboze.adapters import ObsidianAdapter
+from amauxboze.platform import RegistryPolicyEngine
 from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
 from amauxboze.workflows.customer_feedback import (
     CustomerFeedbackDependencies,
@@ -84,7 +85,7 @@ def build(*, execute_stage=stage_executor, persistence=None):
     skills.load()
     deps = CustomerFeedbackDependencies(
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=execute_stage,
         persistence=persistence,
     )
