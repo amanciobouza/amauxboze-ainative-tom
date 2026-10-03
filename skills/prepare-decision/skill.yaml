@@ -1,0 +1,50 @@
+id: prepare-decision
+version: "0.1.0"
+purpose: Prepare a concise founder decision brief from structured inputs.
+
+inputs:
+  type: object
+  required: [question, options]
+  properties:
+    question:
+      type: string
+    options:
+      type: array
+      items:
+        type: string
+    evidence:
+      type: array
+      items:
+        type: string
+
+outputs:
+  type: object
+  required: [summary, tradeoffs, recommendation_options]
+  properties:
+    summary:
+      type: string
+    tradeoffs:
+      type: array
+      items:
+        type: string
+    recommendation_options:
+      type: array
+      items:
+        type: string
+
+context:
+  - Organization/00_Operating-Model.md
+allowed_tools:
+  - obsidian.read
+
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers:
+    - lm_studio
+    - openai
+    - anthropic
+
+approval_required: false
