@@ -130,3 +130,68 @@ def test_production_cancel_path():
     graph.invoke(Command(resume="approve"), config=config)
     final = graph.invoke(Command(resume="cancel"), config=config)
     assert final["current_state"] == "CANCELLED"
+
+
+def test_revision_returns_to_concept_and_reaches_gate_again():
+    calls = []
+
+    def tracked_executor(agent, skill, payload):
+        calls.append(skill)
+        return stage_executor(agent, skill, payload)
+
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+    deps = WatchDevelopmentDependencies(
+        agents=agents,
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=tracked_executor,
+    )
+    graph = build_new_watch_development_workflow(deps)
+    config = {"configurable": {"thread_id": "watch-revise"}}
+
+    first = graph.invoke(
+        {"workflow_id": "wf-watch-5", "founder_brief": "Test concept", "constraints": []},
+        config=config,
+    )
+    assert "__interrupt__" in first
+
+    second = graph.invoke(Command(resume="revise"), config=config)
+    assert "__interrupt__" in second
+    assert calls.count("define-product-brief") == 1
+    assert calls.count("research-watch-opportunity") == 1
+    assert calls.count("design-watch-concept") == 2
+
+
+def test_resume_does_not_repeat_completed_stages():
+    calls = []
+
+    def tracked_executor(agent, skill, payload):
+        calls.append(skill)
+        return stage_executor(agent, skill, payload)
+
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+    deps = WatchDevelopmentDependencies(
+        agents=agents,
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=tracked_executor,
+    )
+    graph = build_new_watch_development_workflow(deps)
+    config = {"configurable": {"thread_id": "watch-resume"}}
+
+    graph.invoke(
+        {"workflow_id": "wf-watch-6", "founder_brief": "Test concept", "constraints": []},
+        config=config,
+    )
+    before = list(calls)
+    graph.invoke(Command(resume="approve"), config=config)
+
+    assert calls.count("define-product-brief") == before.count("define-product-brief")
+    assert calls.count("research-watch-opportunity") == before.count("research-watch-opportunity")
+    assert calls.count("design-watch-concept") == before.count("design-watch-concept")
