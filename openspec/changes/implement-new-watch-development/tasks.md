@@ -40,11 +40,11 @@
 
 ## 5. Obsidian Persistence
 
-- [ ] 5.1 Define workflow workspace paths
-- [ ] 5.2 Persist stage artifacts
-- [ ] 5.3 Persist founder decisions
-- [ ] 5.4 Persist final product specification
-- [ ] 5.5 Ensure writes contain trace metadata
+- [x] 5.1 Define workflow workspace paths
+- [x] 5.2 Persist stage artifacts
+- [x] 5.3 Persist founder decisions
+- [x] 5.4 Persist final product specification
+- [x] 5.5 Ensure writes contain trace metadata
 
 ## 6. Tests
 
@@ -53,7 +53,7 @@
 - [x] 6.3 Test rejection path
 - [ ] 6.4 Test resume does not repeat completed stages
 - [ ] 6.5 Test unauthorized agent/skill combinations
-- [ ] 6.6 Test Obsidian persistence
+- [x] 6.6 Test Obsidian persistence
 
 ## 7. Validation
 
