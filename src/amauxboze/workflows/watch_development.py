@@ -38,6 +38,8 @@ class NewWatchDevelopmentState(TypedDict, total=False):
     artifacts: list[WatchArtifact]
     retry_count: int
     failed_stage: str
+    recoverable: bool
+    recovery_decision: str
     error: str
 
 
@@ -103,101 +105,138 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
             content=content,
         )
 
-    def intent(state: NewWatchDevelopmentState):
-        payload = {
-            "founder_brief": state["founder_brief"],
-            "constraints": state.get("constraints", []),
-        }
-        result = run("elena", "define-product-brief", payload)
-        persist(state, artifact_type="product_brief", agent="elena", skill="define-product-brief", content=result)
+    def failure(state: NewWatchDevelopmentState, stage: str, exc: Exception):
         return {
-            "product_brief": result,
-            "current_state": "BRIEFED",
-            "participating_agents": ["elena"],
-            "artifacts": _artifact(state, "product_brief", "elena", result),
+            "current_state": "ERROR",
+            "failed_stage": stage,
+            "recoverable": True,
+            "error": f"{type(exc).__name__}: {exc}",
+            "retry_count": state.get("retry_count", 0),
         }
+
+    def intent(state: NewWatchDevelopmentState):
+        try:
+            payload = {
+                "founder_brief": state["founder_brief"],
+                "constraints": state.get("constraints", []),
+            }
+            result = run("elena", "define-product-brief", payload)
+            persist(state, artifact_type="product_brief", agent="elena", skill="define-product-brief", content=result)
+            return {
+                "product_brief": result,
+                "current_state": "BRIEFED",
+                "participating_agents": ["elena"],
+                "artifacts": _artifact(state, "product_brief", "elena", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "intent", exc)
 
     def research(state: NewWatchDevelopmentState):
-        result = run("nora", "research-watch-opportunity", {"product_brief": state["product_brief"]})
-        persist(state, artifact_type="evidence_pack", agent="nora", skill="research-watch-opportunity", content=result)
-        return {
-            "evidence_pack": result,
-            "current_state": "RESEARCHED",
-            "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["nora"])),
-            "artifacts": _artifact(state, "evidence_pack", "nora", result),
-        }
+        try:
+            result = run("nora", "research-watch-opportunity", {"product_brief": state["product_brief"]})
+            persist(state, artifact_type="evidence_pack", agent="nora", skill="research-watch-opportunity", content=result)
+            return {
+                "evidence_pack": result,
+                "current_state": "RESEARCHED",
+                "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["nora"])),
+                "artifacts": _artifact(state, "evidence_pack", "nora", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "research", exc)
 
     def concept(state: NewWatchDevelopmentState):
-        result = run(
-            "lucien",
-            "design-watch-concept",
-            {"product_brief": state["product_brief"], "evidence_pack": state["evidence_pack"]},
-        )
-        persist(state, artifact_type="product_concept", agent="lucien", skill="design-watch-concept", content=result)
-        return {
-            "product_concept": result,
-            "current_state": "CONCEPTED",
-            "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["lucien"])),
-            "artifacts": _artifact(state, "product_concept", "lucien", result),
-        }
+        try:
+            result = run(
+                "lucien",
+                "design-watch-concept",
+                {"product_brief": state["product_brief"], "evidence_pack": state["evidence_pack"]},
+            )
+            persist(state, artifact_type="product_concept", agent="lucien", skill="design-watch-concept", content=result)
+            return {
+                "product_concept": result,
+                "current_state": "CONCEPTED",
+                "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["lucien"])),
+                "artifacts": _artifact(state, "product_concept", "lucien", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "concept", exc)
 
     def brand_review(state: NewWatchDevelopmentState):
-        result = run("elodie", "review-brand-fit", {"concept": state["product_concept"]})
-        persist(state, artifact_type="brand_review", agent="elodie", skill="review-brand-fit", content=result)
-        return {
-            "brand_review": result,
-            "current_state": "BRAND_REVIEWED",
-            "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["elodie"])),
-            "artifacts": _artifact(state, "brand_review", "elodie", result),
-        }
+        try:
+            result = run("elodie", "review-brand-fit", {"concept": state["product_concept"]})
+            persist(state, artifact_type="brand_review", agent="elodie", skill="review-brand-fit", content=result)
+            return {
+                "brand_review": result,
+                "current_state": "BRAND_REVIEWED",
+                "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["elodie"])),
+                "artifacts": _artifact(state, "brand_review", "elodie", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "brand_review", exc)
 
     def commercial_review(state: NewWatchDevelopmentState):
-        result = run(
-            "marc",
-            "review-commercial-fit",
-            {"concept": state["product_concept"], "evidence_pack": state["evidence_pack"]},
-        )
-        persist(state, artifact_type="commercial_review", agent="marc", skill="review-commercial-fit", content=result)
-        return {
-            "commercial_review": result,
-            "current_state": "COMMERCIAL_REVIEWED",
-            "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["marc"])),
-            "artifacts": _artifact(state, "commercial_review", "marc", result),
-        }
+        try:
+            result = run(
+                "marc",
+                "review-commercial-fit",
+                {"concept": state["product_concept"], "evidence_pack": state["evidence_pack"]},
+            )
+            persist(state, artifact_type="commercial_review", agent="marc", skill="review-commercial-fit", content=result)
+            return {
+                "commercial_review": result,
+                "current_state": "COMMERCIAL_REVIEWED",
+                "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["marc"])),
+                "artifacts": _artifact(state, "commercial_review", "marc", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "commercial_review", exc)
 
     def customer_review(state: NewWatchDevelopmentState):
-        result = run("sophie", "review-customer-fit", {"concept": state["product_concept"]})
-        persist(state, artifact_type="customer_review", agent="sophie", skill="review-customer-fit", content=result)
-        return {
-            "customer_review": result,
-            "current_state": "CUSTOMER_REVIEWED",
-            "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["sophie"])),
-            "artifacts": _artifact(state, "customer_review", "sophie", result),
-        }
+        try:
+            result = run("sophie", "review-customer-fit", {"concept": state["product_concept"]})
+            persist(state, artifact_type="customer_review", agent="sophie", skill="review-customer-fit", content=result)
+            return {
+                "customer_review": result,
+                "current_state": "CUSTOMER_REVIEWED",
+                "participating_agents": list(dict.fromkeys(state.get("participating_agents", []) + ["sophie"])),
+                "artifacts": _artifact(state, "customer_review", "sophie", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "customer_review", exc)
 
     def integrate(state: NewWatchDevelopmentState):
-        result = run(
-            "elena",
-            "integrate-watch-recommendation",
-            {
-                "concept": state["product_concept"],
-                "brand_review": state["brand_review"],
-                "commercial_review": state["commercial_review"],
-                "customer_review": state["customer_review"],
-            },
-        )
-        persist(
-            state,
-            artifact_type="integrated_recommendation",
-            agent="elena",
-            skill="integrate-watch-recommendation",
-            content=result,
-        )
-        return {
-            "integrated_recommendation": result,
-            "current_state": "DECISION_READY",
-            "artifacts": _artifact(state, "integrated_recommendation", "elena", result),
-        }
+        try:
+            result = run(
+                "elena",
+                "integrate-watch-recommendation",
+                {
+                    "concept": state["product_concept"],
+                    "brand_review": state["brand_review"],
+                    "commercial_review": state["commercial_review"],
+                    "customer_review": state["customer_review"],
+                },
+            )
+            persist(
+                state,
+                artifact_type="integrated_recommendation",
+                agent="elena",
+                skill="integrate-watch-recommendation",
+                content=result,
+            )
+            return {
+                "integrated_recommendation": result,
+                "current_state": "DECISION_READY",
+                "artifacts": _artifact(state, "integrated_recommendation", "elena", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "integrate", exc)
 
     def founder_gate(state: NewWatchDevelopmentState):
         response = interrupt(
@@ -232,23 +271,24 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         return {"current_state": "REJECTED"}
 
     def revision_concept(state: NewWatchDevelopmentState):
-        return {
-            "current_state": "REVISING_CONCEPT",
-            "founder_decision": "",
-        }
+        return {"current_state": "REVISING_CONCEPT", "founder_decision": ""}
 
     def final_spec(state: NewWatchDevelopmentState):
-        result = run(
-            "lucien",
-            "define-watch-spec",
-            {"concept": state["product_concept"], "founder_decision": "approve"},
-        )
-        persist(state, artifact_type="final_specification", agent="lucien", skill="define-watch-spec", content=result)
-        return {
-            "final_specification": result,
-            "current_state": "SPEC_COMPLETE",
-            "artifacts": _artifact(state, "final_specification", "lucien", result),
-        }
+        try:
+            result = run(
+                "lucien",
+                "define-watch-spec",
+                {"concept": state["product_concept"], "founder_decision": "approve"},
+            )
+            persist(state, artifact_type="final_specification", agent="lucien", skill="define-watch-spec", content=result)
+            return {
+                "final_specification": result,
+                "current_state": "SPEC_COMPLETE",
+                "artifacts": _artifact(state, "final_specification", "lucien", result),
+                "error": "",
+            }
+        except Exception as exc:
+            return failure(state, "final_spec", exc)
 
     def production_gate(state: NewWatchDevelopmentState):
         response = interrupt(
@@ -277,16 +317,43 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         return state["production_decision"]
 
     def revision_spec(state: NewWatchDevelopmentState):
-        return {
-            "current_state": "REVISING_SPEC",
-            "production_decision": "",
-        }
+        return {"current_state": "REVISING_SPEC", "production_decision": ""}
 
     def approved(state: NewWatchDevelopmentState):
         return {"current_state": "APPROVED_FOR_PRODUCTION"}
 
     def cancelled(state: NewWatchDevelopmentState):
         return {"current_state": "CANCELLED"}
+
+    def error_recovery(state: NewWatchDevelopmentState):
+        response = interrupt(
+            {
+                "type": "error_recovery",
+                "workflow_id": state["workflow_id"],
+                "failed_stage": state["failed_stage"],
+                "error": state["error"],
+                "retry_count": state.get("retry_count", 0),
+                "allowed_decisions": ["retry", "cancel"],
+            }
+        )
+        decision = str(response.get("decision") if isinstance(response, dict) else response).lower()
+        if decision not in {"retry", "cancel"}:
+            raise ValueError(f"Invalid recovery decision: {decision}")
+        return {
+            "recovery_decision": decision,
+            "retry_count": state.get("retry_count", 0) + (1 if decision == "retry" else 0),
+        }
+
+    def route_error_recovery(state: NewWatchDevelopmentState):
+        if state["recovery_decision"] == "cancel":
+            return "error_cancelled"
+        return state["failed_stage"]
+
+    def error_cancelled(state: NewWatchDevelopmentState):
+        return {"current_state": "FAILED", "recoverable": False}
+
+    def route_after_stage(state: NewWatchDevelopmentState):
+        return "error_recovery" if state.get("current_state") == "ERROR" else "next"
 
     graph.add_node("intent", intent)
     graph.add_node("research", research)
@@ -304,42 +371,52 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
     graph.add_node("revision_spec", revision_spec)
     graph.add_node("approved", approved)
     graph.add_node("cancelled", cancelled)
+    graph.add_node("error_recovery", error_recovery)
+    graph.add_node("error_cancelled", error_cancelled)
 
     graph.add_edge(START, "intent")
-    graph.add_edge("intent", "research")
-    graph.add_edge("research", "concept")
-    graph.add_edge("concept", "brand_review")
-    graph.add_edge("brand_review", "commercial_review")
-    graph.add_edge("commercial_review", "customer_review")
-    graph.add_edge("customer_review", "integrate")
-    graph.add_edge("integrate", "founder_gate")
+    graph.add_conditional_edges("intent", route_after_stage, {"next": "research", "error_recovery": "error_recovery"})
+    graph.add_conditional_edges("research", route_after_stage, {"next": "concept", "error_recovery": "error_recovery"})
+    graph.add_conditional_edges("concept", route_after_stage, {"next": "brand_review", "error_recovery": "error_recovery"})
+    graph.add_conditional_edges("brand_review", route_after_stage, {"next": "commercial_review", "error_recovery": "error_recovery"})
+    graph.add_conditional_edges("commercial_review", route_after_stage, {"next": "customer_review", "error_recovery": "error_recovery"})
+    graph.add_conditional_edges("customer_review", route_after_stage, {"next": "integrate", "error_recovery": "error_recovery"})
+    graph.add_conditional_edges("integrate", route_after_stage, {"next": "founder_gate", "error_recovery": "error_recovery"})
 
     graph.add_conditional_edges(
         "founder_gate",
         route_founder_gate,
-        {
-            "approve": "final_spec",
-            "revise": "revision_concept",
-            "hold": "hold",
-            "reject": "rejected",
-        },
+        {"approve": "final_spec", "revise": "revision_concept", "hold": "hold", "reject": "rejected"},
     )
     graph.add_edge("revision_concept", "concept")
     graph.add_edge("hold", END)
     graph.add_edge("rejected", END)
 
-    graph.add_edge("final_spec", "production_gate")
+    graph.add_conditional_edges("final_spec", route_after_stage, {"next": "production_gate", "error_recovery": "error_recovery"})
     graph.add_conditional_edges(
         "production_gate",
         route_production_gate,
-        {
-            "approve": "approved",
-            "revise": "revision_spec",
-            "cancel": "cancelled",
-        },
+        {"approve": "approved", "revise": "revision_spec", "cancel": "cancelled"},
     )
     graph.add_edge("revision_spec", "final_spec")
     graph.add_edge("approved", END)
     graph.add_edge("cancelled", END)
+
+    graph.add_conditional_edges(
+        "error_recovery",
+        route_error_recovery,
+        {
+            "intent": "intent",
+            "research": "research",
+            "concept": "concept",
+            "brand_review": "brand_review",
+            "commercial_review": "commercial_review",
+            "customer_review": "customer_review",
+            "integrate": "integrate",
+            "final_spec": "final_spec",
+            "error_cancelled": "error_cancelled",
+        },
+    )
+    graph.add_edge("error_cancelled", END)
 
     return graph.compile(checkpointer=MemorySaver())
