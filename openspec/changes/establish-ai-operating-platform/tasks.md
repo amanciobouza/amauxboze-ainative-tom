@@ -62,7 +62,7 @@
 
 ## 8. Validation
 
-- [ ] 8.1 Validate all OpenSpec artifacts
-- [ ] 8.2 Run automated test suite
+- [x] 8.1 Validate all OpenSpec artifacts
+- [x] 8.2 Run automated test suite
 - [x] 8.3 Demonstrate a minimal workflow using one agent, one skill, Obsidian read, model routing, and one approval gate
-- [ ] 8.4 Review foundation before starting business workflow implementations
+- [x] 8.4 Review foundation before starting business workflow implementations
