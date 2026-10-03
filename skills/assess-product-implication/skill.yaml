@@ -1,0 +1,25 @@
+id: assess-product-implication
+version: "0.1.0"
+purpose: Assess product implications of a customer feedback pattern.
+inputs:
+  type: object
+  required: [classification, pattern_analysis]
+  properties:
+    classification: {type: object}
+    pattern_analysis: {type: object}
+outputs:
+  type: object
+  required: [impact, proposed_action, consequential]
+  properties:
+    impact: {type: string}
+    proposed_action: {type: string}
+    consequential: {type: boolean}
+context: [Products/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
