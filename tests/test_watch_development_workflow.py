@@ -2,6 +2,7 @@ from pathlib import Path
 
 from langgraph.types import Command
 
+from amauxboze.platform import RegistryPolicyEngine
 from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
 from amauxboze.workflows.watch_development import (
     WatchDevelopmentDependencies,
@@ -70,7 +71,7 @@ def build():
     deps = WatchDevelopmentDependencies(
         agents=agents,
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=stage_executor,
     )
     return build_new_watch_development_workflow(deps)
@@ -146,7 +147,7 @@ def test_revision_returns_to_concept_and_reaches_gate_again():
     deps = WatchDevelopmentDependencies(
         agents=agents,
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=tracked_executor,
     )
     graph = build_new_watch_development_workflow(deps)
@@ -179,7 +180,7 @@ def test_resume_does_not_repeat_completed_stages():
     deps = WatchDevelopmentDependencies(
         agents=agents,
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=tracked_executor,
     )
     graph = build_new_watch_development_workflow(deps)
@@ -214,7 +215,7 @@ def test_recoverable_stage_error_can_retry():
     deps = WatchDevelopmentDependencies(
         agents=agents,
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=flaky_executor,
     )
     graph = build_new_watch_development_workflow(deps)
@@ -248,7 +249,7 @@ def test_recoverable_stage_error_can_cancel():
     deps = WatchDevelopmentDependencies(
         agents=agents,
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=failing_executor,
     )
     graph = build_new_watch_development_workflow(deps)
