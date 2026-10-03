@@ -1,0 +1,27 @@
+id: create-launch-content
+version: "0.1.0"
+purpose: Create channel-native launch content based on approved messaging and product truth.
+inputs:
+  type: object
+  required: [messaging_framework, product_truth_pack]
+  properties:
+    messaging_framework: {type: object}
+    product_truth_pack: {type: object}
+outputs:
+  type: object
+  required: [tiktok, instagram, pinterest, x, calendar]
+  properties:
+    tiktok: {type: array, items: {type: string}}
+    instagram: {type: array, items: {type: string}}
+    pinterest: {type: array, items: {type: string}}
+    x: {type: array, items: {type: string}}
+    calendar: {type: array, items: {type: string}}
+context: [Brand/, Products/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: high
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: true
