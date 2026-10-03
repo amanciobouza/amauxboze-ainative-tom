@@ -146,3 +146,36 @@ def test_revision_returns_to_preparation_and_gates_again():
     second = graph.invoke(Command(resume="revise"), config=config)
     assert "__interrupt__" in second
     assert calls == []
+
+
+def test_unauthorized_activation_is_blocked():
+    calls = []
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+
+    agents._agents["maya"].tools.actions = []
+
+    def activation(payload):
+        calls.append(payload)
+        return {"status": "activated"}
+
+    deps = ProductLaunchDependencies(
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=stage_executor,
+        execute_activation=activation,
+    )
+    graph = build_product_launch_workflow(deps)
+    config = {"configurable": {"thread_id": "launch-unauthorized"}}
+
+    graph.invoke(initial_state(), config=config)
+
+    try:
+        graph.invoke(Command(resume="approve"), config=config)
+        assert False, "Expected activation permission failure"
+    except PermissionError:
+        pass
+
+    assert calls == []
