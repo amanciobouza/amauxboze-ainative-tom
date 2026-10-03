@@ -1,0 +1,25 @@
+id: prepare-customer-readiness
+version: "0.1.0"
+purpose: Prepare launch FAQ, support guidance, and expected customer objections.
+inputs:
+  type: object
+  required: [product_truth_pack, messaging_framework]
+  properties:
+    product_truth_pack: {type: object}
+    messaging_framework: {type: object}
+outputs:
+  type: object
+  required: [faq, objections, support_guidance]
+  properties:
+    faq: {type: array, items: {type: string}}
+    objections: {type: array, items: {type: string}}
+    support_guidance: {type: array, items: {type: string}}
+context: [Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
