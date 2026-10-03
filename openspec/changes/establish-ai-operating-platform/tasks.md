@@ -5,7 +5,7 @@
 - [x] 1.1 Create Python package structure for runtime, registries, adapters, and workflows
 - [x] 1.2 Add configuration loader for `config/project.yaml`
 - [x] 1.3 Add environment/secrets handling and `.env.example`
-- [ ] 1.4 Add test framework and base CI workflow
+- [x] 1.4 Add test framework and base CI workflow
 
 ## 2. Agent Registry
 
@@ -58,11 +58,11 @@
 - [x] 7.2 Configure LangGraph checkpointing
 - [x] 7.3 Add workflow run identifiers and metadata
 - [x] 7.4 Add structured execution logging
-- [ ] 7.5 Add resume/recovery tests
+- [x] 7.5 Add resume/recovery tests
 
 ## 8. Validation
 
 - [ ] 8.1 Validate all OpenSpec artifacts
 - [ ] 8.2 Run automated test suite
-- [ ] 8.3 Demonstrate a minimal workflow using one agent, one skill, Obsidian read, model routing, and one approval gate
+- [x] 8.3 Demonstrate a minimal workflow using one agent, one skill, Obsidian read, model routing, and one approval gate
 - [ ] 8.4 Review foundation before starting business workflow implementations
