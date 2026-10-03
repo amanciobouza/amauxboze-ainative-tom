@@ -1,0 +1,24 @@
+id: create-message-architecture
+version: "0.1.0"
+purpose: Create a campaign core message, supporting messages, and narrative frame.
+inputs:
+  type: object
+  required: [campaign_brief]
+  properties:
+    campaign_brief: {type: object}
+outputs:
+  type: object
+  required: [core_message, supporting_messages, narrative_frame]
+  properties:
+    core_message: {type: string}
+    supporting_messages: {type: array, items: {type: string}}
+    narrative_frame: {type: string}
+context: [Brand/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: high
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: false
