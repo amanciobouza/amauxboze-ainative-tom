@@ -6,7 +6,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
-from amauxboze.registries import AuthorizationService, SkillRegistry
+from amauxboze.contracts import PolicyEngine, ToolRequest
+from amauxboze.registries import SkillRegistry
 from amauxboze.workflows.product_launch_persistence import ProductLaunchPersistence
 
 StageExecutor = Callable[[str, str, dict[str, Any]], dict[str, Any]]
@@ -45,13 +46,13 @@ class ProductLaunchDependencies:
     def __init__(
         self,
         skills: SkillRegistry,
-        authorization: AuthorizationService,
+        policy: PolicyEngine,
         execute_stage: StageExecutor,
         execute_activation: ActivationExecutor,
         persistence: ProductLaunchPersistence | None = None,
     ):
         self.skills = skills
-        self.authorization = authorization
+        self.policy = policy
         self.execute_stage = execute_stage
         self.execute_activation = execute_activation
         self.persistence = persistence
@@ -61,7 +62,7 @@ def build_product_launch_workflow(deps: ProductLaunchDependencies):
     graph = StateGraph(ProductLaunchState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
-        deps.authorization.authorize_skill(agent, skill)
+        deps.policy.authorize_skill(agent, skill)
         deps.skills.validate_input(skill, payload)
         result = deps.execute_stage(agent, skill, payload)
         deps.skills.validate_output(skill, result)
@@ -251,9 +252,9 @@ def build_product_launch_workflow(deps: ProductLaunchDependencies):
             if state.get("activation_executed"):
                 return {"current_state": "LIVE"}
 
-            deps.authorization.authorize_tool("marc", "shopify_publish", mode="action")
-            deps.authorization.authorize_tool("maya", "social_publish", mode="action")
-            deps.authorization.authorize_tool("sophie", "community_publish", mode="action")
+            deps.policy.authorize_tool(ToolRequest(agent_id="marc", skill_id="workflow", tool_name="shopify_publish", mode="action"))
+            deps.policy.authorize_tool(ToolRequest(agent_id="maya", skill_id="workflow", tool_name="social_publish", mode="action"))
+            deps.policy.authorize_tool(ToolRequest(agent_id="sophie", skill_id="workflow", tool_name="community_publish", mode="action"))
 
             activation_payload = {
                 "workflow_id": state["workflow_id"],
