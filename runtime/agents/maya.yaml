@@ -13,6 +13,6 @@ skills:
 tools:
   read: [obsidian]
   write: [obsidian]
-  actions: []
+  actions: [social_publish]
 approval_boundaries:
   - external_publish
