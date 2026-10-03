@@ -1,0 +1,25 @@
+id: assess-commerce-implication
+version: "0.1.0"
+purpose: Assess commerce implications of customer feedback.
+inputs:
+  type: object
+  required: [classification, pattern_analysis]
+  properties:
+    classification: {type: object}
+    pattern_analysis: {type: object}
+outputs:
+  type: object
+  required: [impact, proposed_action, consequential]
+  properties:
+    impact: {type: string}
+    proposed_action: {type: string}
+    consequential: {type: boolean}
+context: [Commerce/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
