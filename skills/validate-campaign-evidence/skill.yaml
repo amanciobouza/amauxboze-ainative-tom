@@ -1,0 +1,24 @@
+id: validate-campaign-evidence
+version: "0.1.0"
+purpose: Validate externally-dependent claims and identify unsupported campaign statements.
+inputs:
+  type: object
+  required: [message_architecture]
+  properties:
+    message_architecture: {type: object}
+outputs:
+  type: object
+  required: [supported_claims, unsupported_claims, evidence_notes]
+  properties:
+    supported_claims: {type: array, items: {type: string}}
+    unsupported_claims: {type: array, items: {type: string}}
+    evidence_notes: {type: array, items: {type: string}}
+context: [Research/, Products/]
+allowed_tools: [obsidian.read, web.search]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
