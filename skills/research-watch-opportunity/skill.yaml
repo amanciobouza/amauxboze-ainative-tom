@@ -1,0 +1,27 @@
+id: research-watch-opportunity
+version: "0.1.0"
+purpose: Build an evidence pack for a proposed watch opportunity.
+inputs:
+  type: object
+  required: [product_brief]
+  properties:
+    product_brief: {type: object}
+outputs:
+  type: object
+  required: [observations, opportunities, risks]
+  properties:
+    observations: {type: array, items: {type: string}}
+    opportunities: {type: array, items: {type: string}}
+    risks: {type: array, items: {type: string}}
+context:
+  - Research/
+allowed_tools:
+  - obsidian.read
+  - web.search
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
