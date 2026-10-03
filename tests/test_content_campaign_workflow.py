@@ -3,6 +3,7 @@ from pathlib import Path
 from langgraph.types import Command
 
 from amauxboze.adapters import ObsidianAdapter
+from amauxboze.platform import RegistryPolicyEngine
 from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
 from amauxboze.workflows.content_campaign import (
     ContentCampaignDependencies,
@@ -85,7 +86,7 @@ def build(publish_calls, *, persistence=None, execute_stage=stage_executor):
 
     deps = ContentCampaignDependencies(
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=execute_stage,
         execute_publish=publish,
         persistence=persistence,
