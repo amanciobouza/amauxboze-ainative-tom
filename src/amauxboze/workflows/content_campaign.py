@@ -69,7 +69,7 @@ def build_content_campaign_workflow(deps: ContentCampaignDependencies):
     def persist(state: ContentCampaignState, artifact_type: str, agent: str, skill: str, content: dict[str, Any]):
         if deps.persistence is None:
             return
-        deps.authorization.authorize_tool(agent, "obsidian", mode="write")
+        deps.policy.authorize_tool(ToolRequest(agent_id=agent, skill_id=skill, tool_name="obsidian", mode="write"))
         deps.persistence.persist_artifact(
             workflow_id=state["workflow_id"],
             artifact_type=artifact_type,
