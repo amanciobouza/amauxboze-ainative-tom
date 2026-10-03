@@ -12,9 +12,14 @@ skills:
   - review-customer-fit
   - prepare-customer-readiness
   - assess-audience-relevance
+  - intake-feedback
+  - classify-feedback-signal
+  - assess-response-need
+  - draft-feedback-response
+  - capture-feedback-learning
 tools:
   read: [obsidian]
   write: [obsidian]
-  actions: [community_publish]
+  actions: [community_publish, customer_response_send]
 approval_boundaries:
   - consequential_customer_message
