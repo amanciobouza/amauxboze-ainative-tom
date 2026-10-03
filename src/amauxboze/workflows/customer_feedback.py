@@ -116,6 +116,8 @@ def build_customer_feedback_workflow(deps: CustomerFeedbackDependencies):
             return failure(state, "response_need", exc)
 
     def route_response(state: CustomerFeedbackState):
+        if state.get("current_state") == "ERROR":
+            return "error_recovery"
         return "draft" if state["response_need"]["response_required"] else "skip"
 
     def draft_response(state: CustomerFeedbackState):
@@ -178,6 +180,8 @@ def build_customer_feedback_workflow(deps: CustomerFeedbackDependencies):
             return failure(state, "prioritize", exc)
 
     def consequential_route(state: CustomerFeedbackState):
+        if state.get("current_state") == "ERROR":
+            return "error_recovery"
         return "founder_gate" if state["prioritization"]["consequential"] else "learning"
 
     def founder_gate(state: CustomerFeedbackState):
@@ -271,13 +275,19 @@ def build_customer_feedback_workflow(deps: CustomerFeedbackDependencies):
     graph.add_edge(START, "intake")
     graph.add_conditional_edges("intake", route_after_stage, {"next": "classify", "error_recovery": "error_recovery"})
     graph.add_conditional_edges("classify", route_after_stage, {"next": "response_need", "error_recovery": "error_recovery"})
-    graph.add_conditional_edges("response_need", route_after_stage, {"next": "pattern", "error_recovery": "error_recovery"})
-    graph.add_conditional_edges("response_need", route_response, {"draft": "draft_response", "skip": "pattern"})
+    graph.add_conditional_edges(
+        "response_need",
+        route_response,
+        {"draft": "draft_response", "skip": "pattern", "error_recovery": "error_recovery"},
+    )
     graph.add_conditional_edges("draft_response", route_after_stage, {"next": "pattern", "error_recovery": "error_recovery"})
     graph.add_conditional_edges("pattern", route_after_stage, {"next": "implication", "error_recovery": "error_recovery"})
     graph.add_conditional_edges("implication", route_after_stage, {"next": "prioritize", "error_recovery": "error_recovery"})
-    graph.add_conditional_edges("prioritize", route_after_stage, {"next": "learning", "error_recovery": "error_recovery"})
-    graph.add_conditional_edges("prioritize", consequential_route, {"founder_gate": "founder_gate", "learning": "learning"})
+    graph.add_conditional_edges(
+        "prioritize",
+        consequential_route,
+        {"founder_gate": "founder_gate", "learning": "learning", "error_recovery": "error_recovery"},
+    )
 
     graph.add_conditional_edges(
         "founder_gate",
