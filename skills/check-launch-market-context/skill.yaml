@@ -1,0 +1,24 @@
+id: check-launch-market-context
+version: "0.1.0"
+purpose: Check relevant current market context before a launch.
+inputs:
+  type: object
+  required: [launch_brief]
+  properties:
+    launch_brief: {type: object}
+outputs:
+  type: object
+  required: [changes, timing_risks, notes]
+  properties:
+    changes: {type: array, items: {type: string}}
+    timing_risks: {type: array, items: {type: string}}
+    notes: {type: array, items: {type: string}}
+context: [Research/]
+allowed_tools: [obsidian.read, web.search]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
