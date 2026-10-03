@@ -1,0 +1,25 @@
+id: assess-content-implication
+version: "0.1.0"
+purpose: Assess content implications of customer feedback.
+inputs:
+  type: object
+  required: [classification, pattern_analysis]
+  properties:
+    classification: {type: object}
+    pattern_analysis: {type: object}
+outputs:
+  type: object
+  required: [impact, proposed_action, consequential]
+  properties:
+    impact: {type: string}
+    proposed_action: {type: string}
+    consequential: {type: boolean}
+context: [Brand/, Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: medium
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: false
