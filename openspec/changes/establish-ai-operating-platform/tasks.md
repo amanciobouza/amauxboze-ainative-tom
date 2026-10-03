@@ -1,0 +1,68 @@
+# Tasks
+
+## 1. Project Foundation
+
+- [ ] 1.1 Create Python package structure for runtime, registries, adapters, and workflows
+- [ ] 1.2 Add configuration loader for `config/project.yaml`
+- [ ] 1.3 Add environment/secrets handling and `.env.example`
+- [ ] 1.4 Add test framework and base CI workflow
+
+## 2. Agent Registry
+
+- [ ] 2.1 Define agent manifest schema
+- [ ] 2.2 Convert the eight V1 agent profiles into runtime manifests
+- [ ] 2.3 Implement manifest loader and validation
+- [ ] 2.4 Implement agent permission checks
+- [ ] 2.5 Add registry tests
+
+## 3. Skill Registry
+
+- [ ] 3.1 Define skill manifest schema
+- [ ] 3.2 Define canonical skill folder layout
+- [ ] 3.3 Implement skill discovery and version validation
+- [ ] 3.4 Implement input/output schema validation
+- [ ] 3.5 Add authorization checks between agents and skills
+- [ ] 3.6 Add registry tests
+
+## 4. Obsidian Adapter
+
+- [ ] 4.1 Implement vault-root path validation
+- [ ] 4.2 Implement controlled Markdown read
+- [ ] 4.3 Implement controlled Markdown write
+- [ ] 4.4 Add write audit metadata
+- [ ] 4.5 Add atomic-write and concurrency protection
+- [ ] 4.6 Add adapter tests
+
+## 5. Model Router
+
+- [ ] 5.1 Define provider-neutral model interface
+- [ ] 5.2 Implement LM Studio provider
+- [ ] 5.3 Implement LM Studio health/model availability check
+- [ ] 5.4 Implement OpenAI provider
+- [ ] 5.5 Implement Anthropic provider
+- [ ] 5.6 Implement policy-aware routing
+- [ ] 5.7 Implement strict local-only behavior
+- [ ] 5.8 Add router tests
+
+## 6. Approval Gates
+
+- [ ] 6.1 Define approval request state
+- [ ] 6.2 Implement LangGraph interrupt for approval
+- [ ] 6.3 Implement approve/reject/revise outcomes
+- [ ] 6.4 Add protection against duplicate side effects
+- [ ] 6.5 Add approval tests
+
+## 7. Workflow Runtime
+
+- [ ] 7.1 Define shared workflow state model
+- [ ] 7.2 Configure LangGraph checkpointing
+- [ ] 7.3 Add workflow run identifiers and metadata
+- [ ] 7.4 Add structured execution logging
+- [ ] 7.5 Add resume/recovery tests
+
+## 8. Validation
+
+- [ ] 8.1 Validate all OpenSpec artifacts
+- [ ] 8.2 Run automated test suite
+- [ ] 8.3 Demonstrate a minimal workflow using one agent, one skill, Obsidian read, model routing, and one approval gate
+- [ ] 8.4 Review foundation before starting business workflow implementations
