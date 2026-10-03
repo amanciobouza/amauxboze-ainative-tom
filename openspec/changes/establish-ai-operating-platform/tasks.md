@@ -46,18 +46,18 @@
 
 ## 6. Approval Gates
 
-- [ ] 6.1 Define approval request state
-- [ ] 6.2 Implement LangGraph interrupt for approval
-- [ ] 6.3 Implement approve/reject/revise outcomes
-- [ ] 6.4 Add protection against duplicate side effects
-- [ ] 6.5 Add approval tests
+- [x] 6.1 Define approval request state
+- [x] 6.2 Implement LangGraph interrupt for approval
+- [x] 6.3 Implement approve/reject/revise outcomes
+- [x] 6.4 Add protection against duplicate side effects
+- [x] 6.5 Add approval tests
 
 ## 7. Workflow Runtime
 
-- [ ] 7.1 Define shared workflow state model
-- [ ] 7.2 Configure LangGraph checkpointing
-- [ ] 7.3 Add workflow run identifiers and metadata
-- [ ] 7.4 Add structured execution logging
+- [x] 7.1 Define shared workflow state model
+- [x] 7.2 Configure LangGraph checkpointing
+- [x] 7.3 Add workflow run identifiers and metadata
+- [x] 7.4 Add structured execution logging
 - [ ] 7.5 Add resume/recovery tests
 
 ## 8. Validation
