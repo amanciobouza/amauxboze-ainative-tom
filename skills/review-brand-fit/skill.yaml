@@ -1,0 +1,27 @@
+id: review-brand-fit
+version: "0.1.0"
+purpose: Assess a watch concept for Amaux Bozé brand fit and narrative coherence.
+inputs:
+  type: object
+  required: [concept]
+  properties:
+    concept: {type: object}
+outputs:
+  type: object
+  required: [fit, strengths, risks, narrative_directions]
+  properties:
+    fit: {type: string}
+    strengths: {type: array, items: {type: string}}
+    risks: {type: array, items: {type: string}}
+    narrative_directions: {type: array, items: {type: string}}
+context:
+  - Brand/
+allowed_tools:
+  - obsidian.read
+model:
+  privacy: standard
+  reasoning: high
+  creativity: high
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: false
