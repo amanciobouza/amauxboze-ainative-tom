@@ -2,62 +2,62 @@
 
 ## 1. Contracts
 
-- [ ] 1.1 Add core contract package
-- [ ] 1.2 Add ContextRequest / ContextBundle
-- [ ] 1.3 Add ToolRequest / ToolResult
-- [ ] 1.4 Add ModelRequest / ModelResponse
-- [ ] 1.5 Add Knowledge query/write contracts
-- [ ] 1.6 Add RuntimeEvent contract
-- [ ] 1.7 Add TraceSpan contract
+- [x] 1.1 Add core contract package
+- [x] 1.2 Add ContextRequest / ContextBundle
+- [x] 1.3 Add ToolRequest / ToolResult
+- [x] 1.4 Add ModelRequest / ModelResponse
+- [x] 1.5 Add Knowledge query/write contracts
+- [x] 1.6 Add RuntimeEvent contract
+- [x] 1.7 Add TraceSpan contract
 
 ## 2. Model Gateway
 
-- [ ] 2.1 Define ModelGateway interface
-- [ ] 2.2 Wrap current ModelRouter implementation
-- [ ] 2.3 Preserve local-only policy
+- [x] 2.1 Define ModelGateway interface
+- [x] 2.2 Wrap current ModelRouter implementation
+- [x] 2.3 Preserve local-only policy
 - [ ] 2.4 Add normalized telemetry
 
 ## 3. Knowledge Provider
 
-- [ ] 3.1 Define KnowledgeProvider interface
-- [ ] 3.2 Implement ObsidianKnowledgeProvider
-- [ ] 3.3 Add search/list/read/write contract tests
+- [x] 3.1 Define KnowledgeProvider interface
+- [x] 3.2 Implement ObsidianKnowledgeProvider
+- [x] 3.3 Add search/list/read/write contract tests
 
 ## 4. Policy Engine
 
-- [ ] 4.1 Define PolicyEngine interface
-- [ ] 4.2 Wrap agent/skill authorization
+- [x] 4.1 Define PolicyEngine interface
+- [x] 4.2 Wrap agent/skill authorization
 - [ ] 4.3 Add approval-policy checks
 - [ ] 4.4 Add tool guardrail hooks
 
 ## 5. Tool Gateway
 
-- [ ] 5.1 Define ToolGateway
-- [ ] 5.2 Register tool providers
-- [ ] 5.3 Enforce least privilege
+- [x] 5.1 Define ToolGateway
+- [x] 5.2 Register tool providers
+- [x] 5.3 Enforce least privilege
 - [ ] 5.4 Emit trace/event records
-- [ ] 5.5 Add idempotency support
+- [x] 5.5 Add idempotency support
 
 ## 6. Context Engine
 
-- [ ] 6.1 Define context-selection policies
-- [ ] 6.2 Build role context
-- [ ] 6.3 Build workflow context
-- [ ] 6.4 Retrieve scoped knowledge
-- [ ] 6.5 Enforce context budgets
-- [ ] 6.6 Add context provenance metadata
+- [x] 6.1 Define context-selection policies
+- [x] 6.2 Build role context
+- [x] 6.3 Build workflow context
+- [x] 6.4 Retrieve scoped knowledge
+- [x] 6.5 Enforce context budgets
+- [x] 6.6 Add context provenance metadata
 
 ## 7. Event Engine
 
-- [ ] 7.1 Define event envelope
-- [ ] 7.2 Add in-process local event bus
-- [ ] 7.3 Add workflow trigger subscriptions
+- [x] 7.1 Define event envelope
+- [x] 7.2 Add in-process local event bus
+- [x] 7.3 Add workflow trigger subscriptions
 - [ ] 7.4 Add event persistence abstraction
-- [ ] 7.5 Preserve future external-broker boundary
+- [x] 7.5 Preserve future external-broker boundary
 
 ## 8. Observability
 
-- [ ] 8.1 Define trace recorder interface
+- [x] 8.1 Define trace recorder interface
 - [ ] 8.2 Trace workflow runs
 - [ ] 8.3 Trace agent/skill execution
 - [ ] 8.4 Trace model calls
@@ -67,12 +67,12 @@
 
 ## 9. Plugin Registry
 
-- [ ] 9.1 Define plugin manifest
-- [ ] 9.2 Implement plugin discovery
+- [x] 9.1 Define plugin manifest
+- [x] 9.2 Implement plugin discovery
 - [ ] 9.3 Register current LM Studio/OpenAI/Anthropic providers
 - [ ] 9.4 Register Obsidian provider
-- [ ] 9.5 Add health-check contract
-- [ ] 9.6 Add plugin tests
+- [x] 9.5 Add health-check contract
+- [x] 9.6 Add plugin tests
 
 ## 10. Workflow Migration
 
