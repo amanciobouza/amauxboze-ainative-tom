@@ -39,15 +39,15 @@
 - [x] 4.11 Implement revise/hold/cancel routing
 - [x] 4.12 Implement activation boundary
 - [x] 4.13 Implement post-launch learning stage
-- [ ] 4.14 Implement error/retry metadata
+- [x] 4.14 Implement error/retry metadata
 
 ## 5. Persistence
 
-- [ ] 5.1 Define Obsidian launch workspace
-- [ ] 5.2 Persist launch artifacts
-- [ ] 5.3 Persist founder launch decision
-- [ ] 5.4 Persist activation result
-- [ ] 5.5 Persist post-launch learning
+- [x] 5.1 Define Obsidian launch workspace
+- [x] 5.2 Persist launch artifacts
+- [x] 5.3 Persist founder launch decision
+- [x] 5.4 Persist activation result
+- [x] 5.5 Persist post-launch learning
 
 ## 6. Tests
 
@@ -57,12 +57,12 @@
 - [x] 6.4 Test hold path
 - [x] 6.5 Test cancel path
 - [x] 6.6 Test unauthorized activation
-- [ ] 6.7 Test resume without duplicated activation
-- [ ] 6.8 Test Obsidian persistence
+- [x] 6.7 Test resume without duplicated activation
+- [x] 6.8 Test Obsidian persistence
 
 ## 7. Validation
 
-- [ ] 7.1 Validate OpenSpec artifacts
-- [ ] 7.2 Run full automated test suite
-- [ ] 7.3 Demonstrate Product Launch end-to-end with mocked activation
+- [x] 7.1 Validate OpenSpec artifacts
+- [x] 7.2 Run full automated test suite
+- [x] 7.3 Demonstrate Product Launch end-to-end with mocked activation
 - [ ] 7.4 Review before connecting live Shopify/social publishing
