@@ -12,6 +12,7 @@ skills:
   - research-watch-opportunity
   - check-launch-market-context
   - validate-campaign-evidence
+  - detect-feedback-pattern
 tools:
   read: [obsidian, web]
   write: [obsidian]
