@@ -13,6 +13,12 @@ skills:
   - check-launch-market-context
   - validate-campaign-evidence
   - detect-feedback-pattern
+  - define-research-question
+  - collect-market-evidence
+  - capture-market-observations
+  - detect-market-change
+  - synthesize-strategic-insight
+  - update-intelligence-knowledge
 tools:
   read: [obsidian, web]
   write: [obsidian]
