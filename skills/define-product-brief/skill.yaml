@@ -1,0 +1,27 @@
+id: define-product-brief
+version: "0.1.0"
+purpose: Turn founder intent into a structured product development brief.
+inputs:
+  type: object
+  required: [founder_brief]
+  properties:
+    founder_brief: {type: string}
+    constraints: {type: array, items: {type: string}}
+outputs:
+  type: object
+  required: [objective, constraints, open_questions]
+  properties:
+    objective: {type: string}
+    constraints: {type: array, items: {type: string}}
+    open_questions: {type: array, items: {type: string}}
+context:
+  - Organization/00_Operating-Model.md
+allowed_tools:
+  - obsidian.read
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
