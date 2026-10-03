@@ -1,0 +1,24 @@
+id: assess-response-need
+version: "0.1.0"
+purpose: Decide whether customer feedback requires an immediate response.
+inputs:
+  type: object
+  required: [observation, classification]
+  properties:
+    observation: {type: object}
+    classification: {type: object}
+outputs:
+  type: object
+  required: [response_required, consequential]
+  properties:
+    response_required: {type: boolean}
+    consequential: {type: boolean}
+context: [Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
