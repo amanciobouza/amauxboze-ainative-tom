@@ -2,6 +2,7 @@ from pathlib import Path
 
 from langgraph.types import Command
 
+from amauxboze.platform import RegistryPolicyEngine
 from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
 from amauxboze.workflows.product_launch import (
     ProductLaunchDependencies,
@@ -75,7 +76,7 @@ def build(activation_calls):
 
     deps = ProductLaunchDependencies(
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=stage_executor,
         execute_activation=activation,
     )
@@ -163,7 +164,7 @@ def test_unauthorized_activation_is_blocked():
 
     deps = ProductLaunchDependencies(
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=stage_executor,
         execute_activation=activation,
     )
@@ -199,7 +200,7 @@ def test_retry_recovers_failed_stage():
 
     deps = ProductLaunchDependencies(
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=flaky_stage_executor,
         execute_activation=lambda payload: {"status": "activated"},
     )
@@ -244,7 +245,7 @@ def test_product_launch_persists_artifacts(tmp_path):
     persistence = ProductLaunchPersistence(ObsidianAdapter(tmp_path))
     deps = ProductLaunchDependencies(
         skills=skills,
-        authorization=AuthorizationService(agents, skills),
+        policy=RegistryPolicyEngine(AuthorizationService(agents, skills)),
         execute_stage=stage_executor,
         execute_activation=lambda payload: {"status": "activated"},
         persistence=persistence,
