@@ -11,6 +11,7 @@ skills:
   - create-supplier-brief
   - create-product-truth-pack
   - assess-product-implication
+  - interpret-product-impact
 tools:
   read: [obsidian]
   write: [obsidian]
