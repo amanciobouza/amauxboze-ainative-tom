@@ -6,7 +6,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
-from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
+from amauxboze.contracts import PolicyEngine, ToolRequest
+from amauxboze.registries import AgentRegistry, SkillRegistry
 from amauxboze.workflows.watch_persistence import WatchDevelopmentPersistence
 
 StageExecutor = Callable[[str, str, dict[str, Any]], dict[str, Any]]
@@ -48,13 +49,13 @@ class WatchDevelopmentDependencies:
         self,
         agents: AgentRegistry,
         skills: SkillRegistry,
-        authorization: AuthorizationService,
+        policy: PolicyEngine,
         execute_stage: StageExecutor,
         persistence: WatchDevelopmentPersistence | None = None,
     ):
         self.agents = agents
         self.skills = skills
-        self.authorization = authorization
+        self.policy = policy
         self.execute_stage = execute_stage
         self.persistence = persistence
 
@@ -80,7 +81,7 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
     graph = StateGraph(NewWatchDevelopmentState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
-        deps.authorization.authorize_skill(agent, skill)
+        deps.policy.authorize_skill(agent, skill)
         deps.skills.validate_input(skill, payload)
         result = deps.execute_stage(agent, skill, payload)
         deps.skills.validate_output(skill, result)
