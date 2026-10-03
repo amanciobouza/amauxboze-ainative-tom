@@ -179,3 +179,87 @@ def test_unauthorized_activation_is_blocked():
         pass
 
     assert calls == []
+
+
+def test_retry_recovers_failed_stage():
+    calls = []
+    attempts = {"create-launch-messaging": 0}
+
+    def flaky_stage_executor(agent, skill, payload):
+        if skill == "create-launch-messaging":
+            attempts[skill] += 1
+            if attempts[skill] == 1:
+                raise RuntimeError("temporary messaging failure")
+        return stage_executor(agent, skill, payload)
+
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+
+    deps = ProductLaunchDependencies(
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=flaky_stage_executor,
+        execute_activation=lambda payload: {"status": "activated"},
+    )
+    graph = build_product_launch_workflow(deps)
+    config = {"configurable": {"thread_id": "launch-retry"}}
+
+    first = graph.invoke(initial_state(), config=config)
+    assert "__interrupt__" in first
+
+    second = graph.invoke(Command(resume="retry"), config=config)
+    assert "__interrupt__" in second
+    assert attempts["create-launch-messaging"] == 2
+
+
+def test_activation_not_duplicated_when_already_executed():
+    calls = []
+    graph = build(calls)
+    config = {"configurable": {"thread_id": "launch-idempotent"}}
+
+    state = initial_state()
+    state["activation_executed"] = True
+    state["activation_result"] = {"status": "activated"}
+
+    first = graph.invoke(state, config=config)
+    assert "__interrupt__" in first
+
+    final = graph.invoke(Command(resume="approve"), config=config)
+    assert final["current_state"] == "COMPLETE"
+    assert calls == []
+
+
+def test_product_launch_persists_artifacts(tmp_path):
+    from amauxboze.adapters import ObsidianAdapter
+    from amauxboze.workflows.product_launch_persistence import ProductLaunchPersistence
+
+    calls = []
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+
+    persistence = ProductLaunchPersistence(ObsidianAdapter(tmp_path))
+    deps = ProductLaunchDependencies(
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=stage_executor,
+        execute_activation=lambda payload: {"status": "activated"},
+        persistence=persistence,
+    )
+
+    graph = build_product_launch_workflow(deps)
+    config = {"configurable": {"thread_id": "launch-persist"}}
+
+    graph.invoke(initial_state(), config=config)
+    final = graph.invoke(Command(resume={"decision": "approve", "rationale": "Ready"}), config=config)
+
+    assert final["current_state"] == "COMPLETE"
+
+    workspace = tmp_path / "Products" / "Launches" / "launch-1"
+    assert (workspace / "launch_brief.md").exists()
+    assert (workspace / "activation_result.md").exists()
+    assert (workspace / "launch_learning.md").exists()
+    assert (workspace / "decision-launch.md").exists()
