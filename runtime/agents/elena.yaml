@@ -11,6 +11,9 @@ skills:
   - detect-blockers
   - define-product-brief
   - integrate-watch-recommendation
+  - define-launch-brief
+  - integrate-launch-readiness
+  - capture-launch-learning
 tools:
   read: [obsidian]
   write: [obsidian]
