@@ -1,0 +1,21 @@
+project:
+  name: "Amaux Bozé AI Native"
+  repository: "https://github.com/amanciobouza/amauxboze-ainative-tom"
+
+knowledge:
+  provider: "obsidian"
+  vault_path: "C:\\Users\\amanc\\OneDrive\\ObsidianVaults\\Amaux Bozé"
+
+orchestration:
+  provider: "langgraph"
+
+llm:
+  local_provider: "lm_studio"
+  lm_studio_base_url: "http://127.0.0.1:1234"
+  external_providers:
+    - openai
+    - anthropic
+
+software_delivery:
+  specification_standard: "OpenSpec"
+  spec_driven: true
