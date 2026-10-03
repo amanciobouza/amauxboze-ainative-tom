@@ -1,0 +1,42 @@
+id: summarize-status
+version: "0.1.0"
+purpose: Summarize project or workflow status for the founder.
+
+inputs:
+  type: object
+  required: [items]
+  properties:
+    items:
+      type: array
+      items:
+        type: string
+
+outputs:
+  type: object
+  required: [summary, blockers, next_actions]
+  properties:
+    summary:
+      type: string
+    blockers:
+      type: array
+      items:
+        type: string
+    next_actions:
+      type: array
+      items:
+        type: string
+
+context: []
+allowed_tools: []
+
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers:
+    - lm_studio
+    - openai
+    - anthropic
+
+approval_required: false
