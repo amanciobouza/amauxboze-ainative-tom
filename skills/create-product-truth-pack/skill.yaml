@@ -1,0 +1,24 @@
+id: create-product-truth-pack
+version: "0.1.0"
+purpose: Produce the approved set of factual product claims for launch use.
+inputs:
+  type: object
+  required: [product_specification]
+  properties:
+    product_specification: {type: object}
+outputs:
+  type: object
+  required: [approved_claims, prohibited_claims, sku_facts]
+  properties:
+    approved_claims: {type: array, items: {type: string}}
+    prohibited_claims: {type: array, items: {type: string}}
+    sku_facts: {type: array, items: {type: string}}
+context: [Products/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
