@@ -1,0 +1,25 @@
+id: define-research-question
+version: "0.1.0"
+purpose: Turn a strategic topic into a precise research question and scope.
+inputs:
+  type: object
+  required: [watch_topic]
+  properties:
+    watch_topic: {type: string}
+    geography: {type: string}
+outputs:
+  type: object
+  required: [research_question, scope, unknowns]
+  properties:
+    research_question: {type: string}
+    scope: {type: array, items: {type: string}}
+    unknowns: {type: array, items: {type: string}}
+context: [Research/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
