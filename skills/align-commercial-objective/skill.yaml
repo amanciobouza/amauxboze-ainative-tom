@@ -1,0 +1,26 @@
+id: align-commercial-objective
+version: "0.1.0"
+purpose: Align the campaign with CTA, destination, tracking, and commercial intent.
+inputs:
+  type: object
+  required: [campaign_brief, channel_strategy]
+  properties:
+    campaign_brief: {type: object}
+    channel_strategy: {type: object}
+outputs:
+  type: object
+  required: [cta, destination, tracking, conversion_notes]
+  properties:
+    cta: {type: string}
+    destination: {type: string}
+    tracking: {type: array, items: {type: string}}
+    conversion_notes: {type: array, items: {type: string}}
+context: [Commerce/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
