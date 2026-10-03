@@ -1,0 +1,26 @@
+id: intake-feedback
+version: "0.1.0"
+purpose: Normalize raw customer feedback into a structured observation.
+inputs:
+  type: object
+  required: [source, raw_feedback]
+  properties:
+    source: {type: string}
+    raw_feedback: {type: string}
+    customer_context: {type: object}
+outputs:
+  type: object
+  required: [source, observation, metadata]
+  properties:
+    source: {type: string}
+    observation: {type: string}
+    metadata: {type: object}
+context: [Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: low
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
