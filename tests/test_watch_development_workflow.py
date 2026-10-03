@@ -195,3 +195,72 @@ def test_resume_does_not_repeat_completed_stages():
     assert calls.count("define-product-brief") == before.count("define-product-brief")
     assert calls.count("research-watch-opportunity") == before.count("research-watch-opportunity")
     assert calls.count("design-watch-concept") == before.count("design-watch-concept")
+
+
+def test_recoverable_stage_error_can_retry():
+    attempts = {"research-watch-opportunity": 0}
+
+    def flaky_executor(agent, skill, payload):
+        if skill == "research-watch-opportunity":
+            attempts[skill] += 1
+            if attempts[skill] == 1:
+                raise RuntimeError("temporary research failure")
+        return stage_executor(agent, skill, payload)
+
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+    deps = WatchDevelopmentDependencies(
+        agents=agents,
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=flaky_executor,
+    )
+    graph = build_new_watch_development_workflow(deps)
+    config = {"configurable": {"thread_id": "watch-retry"}}
+
+    first = graph.invoke(
+        {"workflow_id": "wf-watch-retry", "founder_brief": "Test concept", "constraints": []},
+        config=config,
+    )
+    assert "__interrupt__" in first
+
+    second = graph.invoke(Command(resume="retry"), config=config)
+    assert "__interrupt__" in second
+    assert attempts["research-watch-opportunity"] == 2
+
+    third = graph.invoke(Command(resume="reject"), config=config)
+    assert third["current_state"] == "REJECTED"
+    assert third["retry_count"] == 1
+
+
+def test_recoverable_stage_error_can_cancel():
+    def failing_executor(agent, skill, payload):
+        if skill == "design-watch-concept":
+            raise RuntimeError("concept generation failed")
+        return stage_executor(agent, skill, payload)
+
+    agents = AgentRegistry(Path("runtime/agents"))
+    skills = SkillRegistry(Path("skills"))
+    agents.load()
+    skills.load()
+    deps = WatchDevelopmentDependencies(
+        agents=agents,
+        skills=skills,
+        authorization=AuthorizationService(agents, skills),
+        execute_stage=failing_executor,
+    )
+    graph = build_new_watch_development_workflow(deps)
+    config = {"configurable": {"thread_id": "watch-error-cancel"}}
+
+    first = graph.invoke(
+        {"workflow_id": "wf-watch-error", "founder_brief": "Test concept", "constraints": []},
+        config=config,
+    )
+    assert "__interrupt__" in first
+
+    final = graph.invoke(Command(resume="cancel"), config=config)
+    assert final["current_state"] == "FAILED"
+    assert final["recoverable"] is False
+    assert final["failed_stage"] == "concept"
