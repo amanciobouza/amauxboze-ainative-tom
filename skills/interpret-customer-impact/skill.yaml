@@ -1,0 +1,25 @@
+id: interpret-customer-impact
+version: "0.1.0"
+purpose: Interpret market signals from a customer and community perspective.
+inputs:
+  type: object
+  required: [pattern_analysis, observations]
+  properties:
+    pattern_analysis: {type: object}
+    observations: {type: object}
+outputs:
+  type: object
+  required: [implications, risks, opportunities]
+  properties:
+    implications: {type: array, items: {type: string}}
+    risks: {type: array, items: {type: string}}
+    opportunities: {type: array, items: {type: string}}
+context: [Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
