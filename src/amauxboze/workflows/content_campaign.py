@@ -6,7 +6,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
-from amauxboze.registries import AuthorizationService, SkillRegistry
+from amauxboze.contracts import PolicyEngine, ToolRequest
+from amauxboze.registries import SkillRegistry
 from amauxboze.workflows.content_campaign_persistence import ContentCampaignPersistence
 
 StageExecutor = Callable[[str, str, dict[str, Any]], dict[str, Any]]
@@ -43,13 +44,13 @@ class ContentCampaignDependencies:
     def __init__(
         self,
         skills: SkillRegistry,
-        authorization: AuthorizationService,
+        policy: PolicyEngine,
         execute_stage: StageExecutor,
         execute_publish: PublishExecutor,
         persistence: ContentCampaignPersistence | None = None,
     ):
         self.skills = skills
-        self.authorization = authorization
+        self.policy = policy
         self.execute_stage = execute_stage
         self.execute_publish = execute_publish
         self.persistence = persistence
@@ -59,7 +60,7 @@ def build_content_campaign_workflow(deps: ContentCampaignDependencies):
     graph = StateGraph(ContentCampaignState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
-        deps.authorization.authorize_skill(agent, skill)
+        deps.policy.authorize_skill(agent, skill)
         deps.skills.validate_input(skill, payload)
         result = deps.execute_stage(agent, skill, payload)
         deps.skills.validate_output(skill, result)
@@ -220,7 +221,7 @@ def build_content_campaign_workflow(deps: ContentCampaignDependencies):
             if state.get("published"):
                 return {"current_state": "PUBLISHED"}
 
-            deps.authorization.authorize_tool("maya", "social_publish", mode="action")
+            deps.policy.authorize_tool(ToolRequest(agent_id="maya", skill_id="workflow", tool_name="social_publish", mode="action"))
             payload = {
                 "workflow_id": state["workflow_id"],
                 "content_package": state["content_package"],
