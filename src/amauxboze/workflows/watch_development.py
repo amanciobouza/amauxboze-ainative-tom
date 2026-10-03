@@ -7,6 +7,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
 from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
+from amauxboze.workflows.watch_persistence import WatchDevelopmentPersistence
 
 StageExecutor = Callable[[str, str, dict[str, Any]], dict[str, Any]]
 
@@ -35,6 +36,8 @@ class NewWatchDevelopmentState(TypedDict, total=False):
     current_state: str
     participating_agents: list[str]
     artifacts: list[WatchArtifact]
+    retry_count: int
+    failed_stage: str
     error: str
 
 
@@ -45,14 +48,21 @@ class WatchDevelopmentDependencies:
         skills: SkillRegistry,
         authorization: AuthorizationService,
         execute_stage: StageExecutor,
+        persistence: WatchDevelopmentPersistence | None = None,
     ):
         self.agents = agents
         self.skills = skills
         self.authorization = authorization
         self.execute_stage = execute_stage
+        self.persistence = persistence
 
 
-def _artifact(state: NewWatchDevelopmentState, artifact_type: str, agent_id: str, content: dict[str, Any]):
+def _artifact(
+    state: NewWatchDevelopmentState,
+    artifact_type: str,
+    agent_id: str,
+    content: dict[str, Any],
+):
     artifacts = list(state.get("artifacts", []))
     artifacts.append(
         {
@@ -74,12 +84,32 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         deps.skills.validate_output(skill, result)
         return result
 
+    def persist(
+        state: NewWatchDevelopmentState,
+        *,
+        artifact_type: str,
+        agent: str,
+        skill: str,
+        content: dict[str, Any],
+    ) -> None:
+        if deps.persistence is None:
+            return
+        deps.authorization.authorize_tool(agent, "obsidian", mode="write")
+        deps.persistence.persist_artifact(
+            workflow_id=state["workflow_id"],
+            artifact_type=artifact_type,
+            agent_id=agent,
+            skill_id=skill,
+            content=content,
+        )
+
     def intent(state: NewWatchDevelopmentState):
         payload = {
             "founder_brief": state["founder_brief"],
             "constraints": state.get("constraints", []),
         }
         result = run("elena", "define-product-brief", payload)
+        persist(state, artifact_type="product_brief", agent="elena", skill="define-product-brief", content=result)
         return {
             "product_brief": result,
             "current_state": "BRIEFED",
@@ -89,6 +119,7 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
 
     def research(state: NewWatchDevelopmentState):
         result = run("nora", "research-watch-opportunity", {"product_brief": state["product_brief"]})
+        persist(state, artifact_type="evidence_pack", agent="nora", skill="research-watch-opportunity", content=result)
         return {
             "evidence_pack": result,
             "current_state": "RESEARCHED",
@@ -102,6 +133,7 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
             "design-watch-concept",
             {"product_brief": state["product_brief"], "evidence_pack": state["evidence_pack"]},
         )
+        persist(state, artifact_type="product_concept", agent="lucien", skill="design-watch-concept", content=result)
         return {
             "product_concept": result,
             "current_state": "CONCEPTED",
@@ -111,6 +143,7 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
 
     def brand_review(state: NewWatchDevelopmentState):
         result = run("elodie", "review-brand-fit", {"concept": state["product_concept"]})
+        persist(state, artifact_type="brand_review", agent="elodie", skill="review-brand-fit", content=result)
         return {
             "brand_review": result,
             "current_state": "BRAND_REVIEWED",
@@ -124,6 +157,7 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
             "review-commercial-fit",
             {"concept": state["product_concept"], "evidence_pack": state["evidence_pack"]},
         )
+        persist(state, artifact_type="commercial_review", agent="marc", skill="review-commercial-fit", content=result)
         return {
             "commercial_review": result,
             "current_state": "COMMERCIAL_REVIEWED",
@@ -133,6 +167,7 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
 
     def customer_review(state: NewWatchDevelopmentState):
         result = run("sophie", "review-customer-fit", {"concept": state["product_concept"]})
+        persist(state, artifact_type="customer_review", agent="sophie", skill="review-customer-fit", content=result)
         return {
             "customer_review": result,
             "current_state": "CUSTOMER_REVIEWED",
@@ -151,6 +186,13 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
                 "customer_review": state["customer_review"],
             },
         )
+        persist(
+            state,
+            artifact_type="integrated_recommendation",
+            agent="elena",
+            skill="integrate-watch-recommendation",
+            content=result,
+        )
         return {
             "integrated_recommendation": result,
             "current_state": "DECISION_READY",
@@ -158,19 +200,26 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         }
 
     def founder_gate(state: NewWatchDevelopmentState):
-        decision = str(
-            interrupt(
-                {
-                    "type": "founder_gate",
-                    "gate": "approve_for_spec",
-                    "workflow_id": state["workflow_id"],
-                    "allowed_decisions": ["approve", "revise", "hold", "reject"],
-                    "recommendation": state["integrated_recommendation"],
-                }
-            )
-        ).lower()
+        response = interrupt(
+            {
+                "type": "founder_gate",
+                "gate": "approve_for_spec",
+                "workflow_id": state["workflow_id"],
+                "allowed_decisions": ["approve", "revise", "hold", "reject"],
+                "recommendation": state["integrated_recommendation"],
+            }
+        )
+        decision = str(response.get("decision") if isinstance(response, dict) else response).lower()
+        rationale = response.get("rationale", "") if isinstance(response, dict) else ""
         if decision not in {"approve", "revise", "hold", "reject"}:
             raise ValueError(f"Invalid founder decision: {decision}")
+        if deps.persistence is not None:
+            deps.persistence.persist_decision(
+                workflow_id=state["workflow_id"],
+                gate="approve_for_spec",
+                decision=decision,
+                rationale=rationale,
+            )
         return {"founder_decision": decision}
 
     def route_founder_gate(state: NewWatchDevelopmentState):
@@ -182,15 +231,19 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
     def mark_rejected(state: NewWatchDevelopmentState):
         return {"current_state": "REJECTED"}
 
-    def revision(state: NewWatchDevelopmentState):
-        return {"current_state": "REVISION_REQUIRED"}
+    def revision_concept(state: NewWatchDevelopmentState):
+        return {
+            "current_state": "REVISING_CONCEPT",
+            "founder_decision": "",
+        }
 
     def final_spec(state: NewWatchDevelopmentState):
         result = run(
             "lucien",
             "define-watch-spec",
-            {"concept": state["product_concept"], "founder_decision": state["founder_decision"]},
+            {"concept": state["product_concept"], "founder_decision": "approve"},
         )
+        persist(state, artifact_type="final_specification", agent="lucien", skill="define-watch-spec", content=result)
         return {
             "final_specification": result,
             "current_state": "SPEC_COMPLETE",
@@ -198,23 +251,36 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         }
 
     def production_gate(state: NewWatchDevelopmentState):
-        decision = str(
-            interrupt(
-                {
-                    "type": "founder_gate",
-                    "gate": "production_approval",
-                    "workflow_id": state["workflow_id"],
-                    "allowed_decisions": ["approve", "revise", "cancel"],
-                    "specification": state["final_specification"],
-                }
-            )
-        ).lower()
+        response = interrupt(
+            {
+                "type": "founder_gate",
+                "gate": "production_approval",
+                "workflow_id": state["workflow_id"],
+                "allowed_decisions": ["approve", "revise", "cancel"],
+                "specification": state["final_specification"],
+            }
+        )
+        decision = str(response.get("decision") if isinstance(response, dict) else response).lower()
+        rationale = response.get("rationale", "") if isinstance(response, dict) else ""
         if decision not in {"approve", "revise", "cancel"}:
             raise ValueError(f"Invalid production decision: {decision}")
+        if deps.persistence is not None:
+            deps.persistence.persist_decision(
+                workflow_id=state["workflow_id"],
+                gate="production_approval",
+                decision=decision,
+                rationale=rationale,
+            )
         return {"production_decision": decision}
 
     def route_production_gate(state: NewWatchDevelopmentState):
         return state["production_decision"]
+
+    def revision_spec(state: NewWatchDevelopmentState):
+        return {
+            "current_state": "REVISING_SPEC",
+            "production_decision": "",
+        }
 
     def approved(state: NewWatchDevelopmentState):
         return {"current_state": "APPROVED_FOR_PRODUCTION"}
@@ -230,11 +296,12 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
     graph.add_node("customer_review", customer_review)
     graph.add_node("integrate", integrate)
     graph.add_node("founder_gate", founder_gate)
-    graph.add_node("revision", revision)
+    graph.add_node("revision_concept", revision_concept)
     graph.add_node("hold", mark_hold)
     graph.add_node("rejected", mark_rejected)
     graph.add_node("final_spec", final_spec)
     graph.add_node("production_gate", production_gate)
+    graph.add_node("revision_spec", revision_spec)
     graph.add_node("approved", approved)
     graph.add_node("cancelled", cancelled)
 
@@ -252,12 +319,12 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         route_founder_gate,
         {
             "approve": "final_spec",
-            "revise": "revision",
+            "revise": "revision_concept",
             "hold": "hold",
             "reject": "rejected",
         },
     )
-    graph.add_edge("revision", END)
+    graph.add_edge("revision_concept", "concept")
     graph.add_edge("hold", END)
     graph.add_edge("rejected", END)
 
@@ -267,10 +334,11 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
         route_production_gate,
         {
             "approve": "approved",
-            "revise": "revision",
+            "revise": "revision_spec",
             "cancel": "cancelled",
         },
     )
+    graph.add_edge("revision_spec", "final_spec")
     graph.add_edge("approved", END)
     graph.add_edge("cancelled", END)
 
