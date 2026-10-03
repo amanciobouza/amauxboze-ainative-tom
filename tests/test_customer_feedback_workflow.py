@@ -95,7 +95,7 @@ def test_isolated_feedback_path():
     graph = build()
     config = {"configurable": {"thread_id": "feedback-isolated"}}
     final = graph.invoke(initial_state(), config=config)
-    assert final["current_state"] == "LEARNING_CAPTURED"
+    assert final["current_state"] == "LEARNING_CAPTURED", final.get("error")
     assert final["pattern_analysis"]["pattern_status"] == "isolated"
 
 
