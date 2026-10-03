@@ -1,0 +1,26 @@
+id: define-campaign-brief
+version: "0.1.0"
+purpose: Turn a campaign objective and audience into a structured campaign brief.
+inputs:
+  type: object
+  required: [campaign_objective, audience]
+  properties:
+    campaign_objective: {type: string}
+    audience: {type: string}
+outputs:
+  type: object
+  required: [objective, audience, constraints, success_signals]
+  properties:
+    objective: {type: string}
+    audience: {type: string}
+    constraints: {type: array, items: {type: string}}
+    success_signals: {type: array, items: {type: string}}
+context: [Organization/, Brand/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
