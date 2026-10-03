@@ -1,0 +1,25 @@
+id: assess-audience-relevance
+version: "0.1.0"
+purpose: Assess whether a campaign message is relevant and understandable for the intended audience.
+inputs:
+  type: object
+  required: [campaign_brief, message_architecture]
+  properties:
+    campaign_brief: {type: object}
+    message_architecture: {type: object}
+outputs:
+  type: object
+  required: [relevance, objections, misunderstandings]
+  properties:
+    relevance: {type: string}
+    objections: {type: array, items: {type: string}}
+    misunderstandings: {type: array, items: {type: string}}
+context: [Customers/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
