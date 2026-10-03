@@ -183,6 +183,10 @@ def build_product_launch_workflow(deps: ProductLaunchDependencies):
         if state.get("activation_executed"):
             return {"current_state": "LIVE"}
 
+        deps.authorization.authorize_tool("marc", "shopify_publish", mode="action")
+        deps.authorization.authorize_tool("maya", "social_publish", mode="action")
+        deps.authorization.authorize_tool("sophie", "community_publish", mode="action")
+
         activation_payload = {
             "workflow_id": state["workflow_id"],
             "product_id": state["product_id"],
