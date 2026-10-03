@@ -1,0 +1,24 @@
+id: prepare-strategic-decision
+version: "0.1.0"
+purpose: Turn a strategic insight into a concise founder decision brief.
+inputs:
+  type: object
+  required: [strategic_insight]
+  properties:
+    strategic_insight: {type: object}
+outputs:
+  type: object
+  required: [summary, decision_options, follow_up_conditions]
+  properties:
+    summary: {type: string}
+    decision_options: {type: array, items: {type: string}}
+    follow_up_conditions: {type: array, items: {type: string}}
+context: [Organization/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: true
