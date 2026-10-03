@@ -30,7 +30,7 @@
 - [x] 4.2 Implement controlled Markdown read
 - [x] 4.3 Implement controlled Markdown write
 - [x] 4.4 Add write audit metadata
-- [ ] 4.5 Add atomic-write and concurrency protection
+- [x] 4.5 Add atomic-write and concurrency protection
 - [x] 4.6 Add adapter tests
 
 ## 5. Model Router
