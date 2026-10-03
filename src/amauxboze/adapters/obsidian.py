@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import Lock
 
 
 class ObsidianAdapter:
     def __init__(self, vault_root: str | Path):
         self.vault_root = Path(vault_root).expanduser().resolve()
+        self._write_lock = Lock()
 
     def _resolve_inside_vault(self, relative_path: str | Path) -> Path:
         candidate = (self.vault_root / Path(relative_path)).resolve()
@@ -40,7 +42,10 @@ class ObsidianAdapter:
             f"ai_write_skill: {skill_id}\n"
             f"ai_write_timestamp: {stamp}\n"
         )
-        tmp = path.with_suffix(path.suffix + ".tmp")
-        tmp.write_text(content.rstrip() + audit, encoding="utf-8")
-        tmp.replace(path)
+
+        with self._write_lock:
+            tmp = path.with_suffix(path.suffix + ".tmp")
+            tmp.write_text(content.rstrip() + audit, encoding="utf-8")
+            tmp.replace(path)
+
         return path
