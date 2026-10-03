@@ -14,7 +14,7 @@ skills:
 tools:
   read: [obsidian, shopify]
   write: [obsidian, shopify_draft]
-  actions: []
+  actions: [shopify_publish]
 approval_boundaries:
   - price_publish
   - shopify_publish
