@@ -76,18 +76,18 @@
 
 ## 10. Workflow Migration
 
-- [ ] 10.1 Migrate New Watch Development
-- [ ] 10.2 Migrate Product Launch
-- [ ] 10.3 Migrate Content Campaign
-- [ ] 10.4 Migrate Customer Feedback Learning
-- [ ] 10.5 Migrate Market Intelligence
-- [ ] 10.6 Verify behavior parity
+- [x] 10.1 Migrate New Watch Development
+- [x] 10.2 Migrate Product Launch
+- [x] 10.3 Migrate Content Campaign
+- [x] 10.4 Migrate Customer Feedback Learning
+- [x] 10.5 Migrate Market Intelligence
+- [x] 10.6 Verify behavior parity
 
 ## 11. Validation
 
-- [ ] 11.1 Validate OpenSpec
-- [ ] 11.2 Run full test suite
+- [x] 11.1 Validate OpenSpec
+- [x] 11.2 Run full test suite
 - [ ] 11.3 Demonstrate provider replacement
-- [ ] 11.4 Demonstrate tool permission enforcement
+- [x] 11.4 Demonstrate tool permission enforcement
 - [ ] 11.5 Demonstrate event-triggered workflow
 - [ ] 11.6 Demonstrate end-to-end trace
