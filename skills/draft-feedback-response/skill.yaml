@@ -1,0 +1,23 @@
+id: draft-feedback-response
+version: "0.1.0"
+purpose: Draft a customer response based on feedback and context.
+inputs:
+  type: object
+  required: [observation, classification]
+  properties:
+    observation: {type: object}
+    classification: {type: object}
+outputs:
+  type: object
+  required: [draft]
+  properties:
+    draft: {type: string}
+context: [Customers/, Brand/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: medium
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: true
