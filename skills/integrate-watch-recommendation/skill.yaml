@@ -1,0 +1,29 @@
+id: integrate-watch-recommendation
+version: "0.1.0"
+purpose: Synthesize specialist reviews into a founder-ready watch development recommendation.
+inputs:
+  type: object
+  required: [concept, brand_review, commercial_review, customer_review]
+  properties:
+    concept: {type: object}
+    brand_review: {type: object}
+    commercial_review: {type: object}
+    customer_review: {type: object}
+outputs:
+  type: object
+  required: [summary, tradeoffs, recommendation_options]
+  properties:
+    summary: {type: string}
+    tradeoffs: {type: array, items: {type: string}}
+    recommendation_options: {type: array, items: {type: string}}
+context:
+  - Organization/
+allowed_tools:
+  - obsidian.read
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: true
