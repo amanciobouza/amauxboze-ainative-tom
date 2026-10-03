@@ -9,6 +9,7 @@ skills:
   - detect-feedback-patterns
   - route-support-case
   - summarize-reviews
+  - review-customer-fit
 tools:
   read: [obsidian]
   write: [obsidian]
