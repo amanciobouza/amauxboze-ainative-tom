@@ -1,0 +1,27 @@
+id: create-campaign-content
+version: "0.1.0"
+purpose: Create the channel-native content package for an approved campaign direction.
+inputs:
+  type: object
+  required: [message_architecture, channel_strategy, commercial_alignment, evidence_validation]
+  properties:
+    message_architecture: {type: object}
+    channel_strategy: {type: object}
+    commercial_alignment: {type: object}
+    evidence_validation: {type: object}
+outputs:
+  type: object
+  required: [assets, copy, schedule]
+  properties:
+    assets: {type: array, items: {type: string}}
+    copy: {type: array, items: {type: string}}
+    schedule: {type: array, items: {type: string}}
+context: [Brand/, Products/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: high
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: true
