@@ -7,7 +7,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
-from amauxboze.registries import AuthorizationService, SkillRegistry
+from amauxboze.contracts import PolicyEngine, ToolRequest
+from amauxboze.registries import SkillRegistry
 from amauxboze.workflows.market_intelligence_persistence import MarketIntelligencePersistence
 
 StageExecutor = Callable[[str, str, dict[str, Any]], dict[str, Any]]
@@ -42,12 +43,12 @@ class MarketIntelligenceDependencies:
     def __init__(
         self,
         skills: SkillRegistry,
-        authorization: AuthorizationService,
+        policy: PolicyEngine,
         execute_stage: StageExecutor,
         persistence: MarketIntelligencePersistence | None = None,
     ):
         self.skills = skills
-        self.authorization = authorization
+        self.policy = policy
         self.execute_stage = execute_stage
         self.persistence = persistence
 
@@ -56,7 +57,7 @@ def build_market_intelligence_workflow(deps: MarketIntelligenceDependencies):
     graph = StateGraph(MarketIntelligenceState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
-        deps.authorization.authorize_skill(agent, skill)
+        deps.policy.authorize_skill(agent, skill)
         deps.skills.validate_input(skill, payload)
         result = deps.execute_stage(agent, skill, payload)
         deps.skills.validate_output(skill, result)
