@@ -1,0 +1,24 @@
+id: prioritize-feedback-action
+version: "0.1.0"
+purpose: Prioritize a feedback-driven action using explicit business criteria.
+inputs:
+  type: object
+  required: [functional_implications]
+  properties:
+    functional_implications: {type: object}
+outputs:
+  type: object
+  required: [priority, rationale, consequential]
+  properties:
+    priority: {type: string}
+    rationale: {type: string}
+    consequential: {type: boolean}
+context: [Organization/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
