@@ -1,0 +1,26 @@
+id: define-channel-strategy
+version: "0.1.0"
+purpose: Define channels, formats, cadence, and repurposing strategy for a campaign.
+inputs:
+  type: object
+  required: [campaign_brief, message_architecture]
+  properties:
+    campaign_brief: {type: object}
+    message_architecture: {type: object}
+outputs:
+  type: object
+  required: [channels, formats, cadence, repurposing]
+  properties:
+    channels: {type: array, items: {type: string}}
+    formats: {type: array, items: {type: string}}
+    cadence: {type: array, items: {type: string}}
+    repurposing: {type: array, items: {type: string}}
+context: [Brand/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: high
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: false
