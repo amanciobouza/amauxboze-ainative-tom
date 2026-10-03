@@ -1,0 +1,25 @@
+id: update-intelligence-knowledge
+version: "0.1.0"
+purpose: Persist strategic insight, founder decision, and follow-up conditions without overwriting prior history.
+inputs:
+  type: object
+  required: [strategic_insight, founder_decision]
+  properties:
+    strategic_insight: {type: object}
+    founder_decision: {type: string}
+    follow_up_conditions: {type: array, items: {type: string}}
+outputs:
+  type: object
+  required: [status, stored_items]
+  properties:
+    status: {type: string}
+    stored_items: {type: array, items: {type: string}}
+context: [Research/Intelligence/]
+allowed_tools: [obsidian.read, obsidian.write]
+model:
+  privacy: standard
+  reasoning: medium
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
