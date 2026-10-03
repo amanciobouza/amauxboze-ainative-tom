@@ -9,3 +9,42 @@ context:
   local_llm: "LM Studio"
   local_llm_base_url: "http://127.0.0.1:1234"
   source_repository: "https://github.com/amanciobouza/amauxboze-ainative-tom"
+
+architecture_principles:
+  - "The system is an AI-native TOM/OS, not a collection of ad-hoc agents."
+  - "The architecture MUST remain modular and contract-first."
+  - "Everything is replaceable except the contracts and the knowledge."
+  - "Business workflows MUST depend on stable interfaces, not provider-specific implementations."
+  - "LangGraph is the current workflow engine, not a permanent business-logic dependency."
+  - "Obsidian is the current knowledge provider, not a permanent storage dependency."
+  - "LM Studio, OpenAI, and Anthropic are model providers behind a provider-neutral Model Gateway."
+  - "External actions MUST pass through a Tool Gateway and Policy Engine."
+  - "Agents define responsibility; skills define capability; tools define access; workflows define collaboration."
+  - "Context MUST be task-scoped and minimal by default."
+  - "Human approval MUST gate consequential actions until explicitly delegated."
+  - "Observability, evaluations, retries, and traceability are first-class architecture concerns."
+  - "The system MUST support event-driven workflow initiation in addition to direct user commands."
+  - "Provider and integration extensibility MUST use plugin contracts."
+  - "The local-first architecture MUST preserve a clean migration path to SaaS."
+  - "Software changes MUST be specified through OpenSpec before implementation."
+
+mandatory_modules:
+  - control_plane
+  - workflow_engine
+  - agent_runtime
+  - skill_runtime
+  - context_engine
+  - tool_gateway
+  - model_gateway
+  - memory_knowledge
+  - policy_approval_engine
+  - observability_evaluation
+  - event_engine
+  - plugin_registry
+
+current_implementations:
+  workflow_engine: "LangGraph"
+  knowledge_provider: "Obsidian"
+  local_model_runtime: "LM Studio"
+  local_runtime_database: "SQLite"
+  future_runtime_database: "PostgreSQL"
