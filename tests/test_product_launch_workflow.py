@@ -171,13 +171,13 @@ def test_unauthorized_activation_is_blocked():
     config = {"configurable": {"thread_id": "launch-unauthorized"}}
 
     graph.invoke(initial_state(), config=config)
+    result = graph.invoke(Command(resume="approve"), config=config)
 
-    try:
-        graph.invoke(Command(resume="approve"), config=config)
-        assert False, "Expected activation permission failure"
-    except PermissionError:
-        pass
-
+    assert "__interrupt__" in result
+    state = graph.get_state(config).values
+    assert state["current_state"] == "ERROR"
+    assert state["failed_stage"] == "activate"
+    assert "PermissionError" in state["error"]
     assert calls == []
 
 
