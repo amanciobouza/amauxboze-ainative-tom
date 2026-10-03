@@ -1,0 +1,24 @@
+id: capture-launch-learning
+version: "0.1.0"
+purpose: Consolidate post-launch commerce, content, customer, and market signals into reusable learning.
+inputs:
+  type: object
+  required: [performance_snapshot]
+  properties:
+    performance_snapshot: {type: object}
+outputs:
+  type: object
+  required: [what_worked, what_did_not, next_experiment]
+  properties:
+    what_worked: {type: array, items: {type: string}}
+    what_did_not: {type: array, items: {type: string}}
+    next_experiment: {type: string}
+context: [Learnings/]
+allowed_tools: [obsidian.read, obsidian.write]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
