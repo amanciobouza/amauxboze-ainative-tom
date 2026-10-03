@@ -9,6 +9,8 @@ skills:
   - coordinate-agents
   - summarize-status
   - detect-blockers
+  - define-product-brief
+  - integrate-watch-recommendation
 tools:
   read: [obsidian]
   write: [obsidian]
