@@ -14,8 +14,8 @@ from amauxboze.workflows.customer_feedback_persistence import CustomerFeedbackPe
 def stage_executor(agent, skill, payload):
     outputs = {
         "intake-feedback": {
-            "source": payload["source"],
-            "observation": payload["raw_feedback"],
+            "source": payload.get("source", "review"),
+            "observation": payload.get("raw_feedback", ""),
             "metadata": {},
         },
         "classify-feedback-signal": {
