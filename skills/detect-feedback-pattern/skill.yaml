@@ -1,0 +1,24 @@
+id: detect-feedback-pattern
+version: "0.1.0"
+purpose: Determine whether feedback is isolated or part of a recurring pattern.
+inputs:
+  type: object
+  required: [observation, classification]
+  properties:
+    observation: {type: object}
+    classification: {type: object}
+outputs:
+  type: object
+  required: [pattern_status, supporting_signals]
+  properties:
+    pattern_status: {type: string}
+    supporting_signals: {type: array, items: {type: string}}
+context: [Customers/Feedback/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
