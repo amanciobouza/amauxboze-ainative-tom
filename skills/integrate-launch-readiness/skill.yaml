@@ -1,0 +1,27 @@
+id: integrate-launch-readiness
+version: "0.1.0"
+purpose: Synthesize launch artifacts into a founder-ready launch readiness decision.
+inputs:
+  type: object
+  required: [commercial_setup, content_plan, support_pack, market_context]
+  properties:
+    commercial_setup: {type: object}
+    content_plan: {type: object}
+    support_pack: {type: object}
+    market_context: {type: object}
+outputs:
+  type: object
+  required: [summary, blockers, required_approvals]
+  properties:
+    summary: {type: string}
+    blockers: {type: array, items: {type: string}}
+    required_approvals: {type: array, items: {type: string}}
+context: [Organization/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: true
