@@ -1,0 +1,24 @@
+id: detect-market-change
+version: "0.1.0"
+purpose: Detect repeated signals, change, contradiction, and unknowns across market observations.
+inputs:
+  type: object
+  required: [observations]
+  properties:
+    observations: {type: object}
+outputs:
+  type: object
+  required: [signals, contradictions, unknowns]
+  properties:
+    signals: {type: array, items: {type: string}}
+    contradictions: {type: array, items: {type: string}}
+    unknowns: {type: array, items: {type: string}}
+context: [Research/Intelligence/]
+allowed_tools: [obsidian.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
