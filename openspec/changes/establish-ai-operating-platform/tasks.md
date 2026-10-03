@@ -18,11 +18,11 @@
 ## 3. Skill Registry
 
 - [x] 3.1 Define skill manifest schema
-- [ ] 3.2 Define canonical skill folder layout
+- [x] 3.2 Define canonical skill folder layout
 - [x] 3.3 Implement skill discovery and version validation
-- [ ] 3.4 Implement input/output schema validation
-- [ ] 3.5 Add authorization checks between agents and skills
-- [ ] 3.6 Add registry tests
+- [x] 3.4 Implement input/output schema validation
+- [x] 3.5 Add authorization checks between agents and skills
+- [x] 3.6 Add registry tests
 
 ## 4. Obsidian Adapter
 
