@@ -1,0 +1,23 @@
+id: collect-market-evidence
+version: "0.1.0"
+purpose: Collect source-backed evidence relevant to a market research question.
+inputs:
+  type: object
+  required: [research_question]
+  properties:
+    research_question: {type: object}
+outputs:
+  type: object
+  required: [sources, evidence_items]
+  properties:
+    sources: {type: array, items: {type: string}}
+    evidence_items: {type: array, items: {type: string}}
+context: [Research/]
+allowed_tools: [obsidian.read, web.search]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: false
