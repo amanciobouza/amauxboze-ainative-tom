@@ -1,0 +1,29 @@
+id: capture-feedback-learning
+version: "0.1.0"
+purpose: Capture the signal, pattern, decision, action, and outcome as reusable organizational learning.
+inputs:
+  type: object
+  required: [observation, classification, pattern_analysis, prioritization]
+  properties:
+    observation: {type: object}
+    classification: {type: object}
+    pattern_analysis: {type: object}
+    prioritization: {type: object}
+    founder_decision: {type: string}
+outputs:
+  type: object
+  required: [signal, pattern, decision, action]
+  properties:
+    signal: {type: string}
+    pattern: {type: string}
+    decision: {type: string}
+    action: {type: string}
+context: [Learnings/]
+allowed_tools: [obsidian.read, obsidian.write]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [lm_studio, openai, anthropic]
+approval_required: false
