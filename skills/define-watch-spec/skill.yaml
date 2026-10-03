@@ -1,0 +1,32 @@
+id: define-watch-spec
+version: "0.1.0"
+purpose: Turn an approved watch concept into a detailed product specification.
+inputs:
+  type: object
+  required: [concept, founder_decision]
+  properties:
+    concept: {type: object}
+    founder_decision: {type: string}
+outputs:
+  type: object
+  required: [movement, case, dial, hands, crystal, water_resistance, open_assumptions]
+  properties:
+    movement: {type: string}
+    case: {type: string}
+    dial: {type: string}
+    hands: {type: string}
+    crystal: {type: string}
+    water_resistance: {type: string}
+    open_assumptions: {type: array, items: {type: string}}
+context:
+  - Products/
+allowed_tools:
+  - obsidian.read
+  - obsidian.write
+model:
+  privacy: standard
+  reasoning: high
+  creativity: medium
+  coding: false
+  preferred_providers: [anthropic, openai, lm_studio]
+approval_required: true
