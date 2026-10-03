@@ -1,0 +1,25 @@
+id: prepare-commercial-launch
+version: "0.1.0"
+purpose: Prepare pricing, offer, Shopify draft, and conversion assumptions for launch.
+inputs:
+  type: object
+  required: [product_specification, product_truth_pack]
+  properties:
+    product_specification: {type: object}
+    product_truth_pack: {type: object}
+outputs:
+  type: object
+  required: [pricing_view, shopify_draft, conversion_plan]
+  properties:
+    pricing_view: {type: string}
+    shopify_draft: {type: object}
+    conversion_plan: {type: array, items: {type: string}}
+context: [Commerce/]
+allowed_tools: [obsidian.read, shopify.read]
+model:
+  privacy: standard
+  reasoning: high
+  creativity: low
+  coding: false
+  preferred_providers: [openai, anthropic, lm_studio]
+approval_required: true
