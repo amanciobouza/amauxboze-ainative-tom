@@ -36,7 +36,7 @@
 - [x] 4.9 Implement final specification node
 - [x] 4.10 Implement production approval gate
 - [x] 4.11 Implement reject/hold/revise routing
-- [ ] 4.12 Implement error handling and retry metadata
+- [x] 4.12 Implement error handling and retry metadata
 
 ## 5. Obsidian Persistence
 
@@ -49,15 +49,15 @@
 ## 6. Tests
 
 - [x] 6.1 Test happy path through both founder gates
-- [ ] 6.2 Test revision path
+- [x] 6.2 Test revision path
 - [x] 6.3 Test rejection path
-- [ ] 6.4 Test resume does not repeat completed stages
+- [x] 6.4 Test resume does not repeat completed stages
 - [ ] 6.5 Test unauthorized agent/skill combinations
 - [x] 6.6 Test Obsidian persistence
 
 ## 7. Validation
 
-- [ ] 7.1 Validate OpenSpec artifacts
-- [ ] 7.2 Run full automated test suite
-- [ ] 7.3 Demonstrate one end-to-end watch development run with mocked model execution
+- [x] 7.1 Validate OpenSpec artifacts
+- [x] 7.2 Run full automated test suite
+- [x] 7.3 Demonstrate one end-to-end watch development run with mocked model execution
 - [ ] 7.4 Review before connecting live LM Studio execution
