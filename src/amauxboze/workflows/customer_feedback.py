@@ -49,7 +49,7 @@ class CustomerFeedbackDependencies:
         self.persistence = persistence
 
 
-def build_customer_feedback_workflow(deps: CustomerFeedbackDependencies):
+def build_customer_feedback_workflow(deps: CustomerFeedbackDependencies, *, checkpointer=None):
     graph = StateGraph(CustomerFeedbackState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -316,4 +316,4 @@ def build_customer_feedback_workflow(deps: CustomerFeedbackDependencies):
     )
     graph.add_edge("error_cancelled", END)
 
-    return graph.compile(checkpointer=MemorySaver())
+    return graph.compile(checkpointer=checkpointer if checkpointer is not None else MemorySaver())

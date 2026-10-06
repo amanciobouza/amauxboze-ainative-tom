@@ -1,0 +1,27 @@
+id: export-approved-learning
+version: 0.1.0
+purpose: Export reviewed learning with explicit founder approval through the knowledge
+  gateway.
+inputs:
+  type: object
+  required:
+  - content
+  properties:
+    content:
+      type: string
+outputs:
+  type: object
+  required:
+  - path
+  properties:
+    path:
+      type: string
+context: []
+allowed_tools:
+- obsidian.write
+model:
+  privacy: local_only
+  reasoning: high
+  creativity: low
+  preferred_providers:
+  - lm_studio

@@ -16,6 +16,7 @@ class AgentManifest(BaseModel):
     name: str
     role: str
     mission: str
+    communication_instructions: list[str] = Field(default_factory=list)
     skills: list[str] = Field(default_factory=list)
     tools: ToolPermissions = Field(default_factory=ToolPermissions)
     approval_boundaries: list[str] = Field(default_factory=list)

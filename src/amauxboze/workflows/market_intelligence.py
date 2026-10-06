@@ -53,7 +53,7 @@ class MarketIntelligenceDependencies:
         self.persistence = persistence
 
 
-def build_market_intelligence_workflow(deps: MarketIntelligenceDependencies):
+def build_market_intelligence_workflow(deps: MarketIntelligenceDependencies, *, checkpointer=None):
     graph = StateGraph(MarketIntelligenceState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -306,4 +306,4 @@ def build_market_intelligence_workflow(deps: MarketIntelligenceDependencies):
     )
     graph.add_edge("error_cancelled", END)
 
-    return graph.compile(checkpointer=MemorySaver())
+    return graph.compile(checkpointer=checkpointer if checkpointer is not None else MemorySaver())

@@ -3,6 +3,7 @@ name: Kai Weber
 role: Head of Technology & AI Automation
 mission: Build and maintain the technical operating system that enables Amaux Bozé agents to work reliably, safely, and efficiently.
 skills:
+  - retrospective-contribute
   - design-langgraph-workflow
   - implement-tool
   - integrate-model

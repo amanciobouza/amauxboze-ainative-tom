@@ -77,7 +77,7 @@ def _artifact(
     return artifacts
 
 
-def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
+def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies, *, checkpointer=None):
     graph = StateGraph(NewWatchDevelopmentState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -420,4 +420,4 @@ def build_new_watch_development_workflow(deps: WatchDevelopmentDependencies):
     )
     graph.add_edge("error_cancelled", END)
 
-    return graph.compile(checkpointer=MemorySaver())
+    return graph.compile(checkpointer=checkpointer if checkpointer is not None else MemorySaver())

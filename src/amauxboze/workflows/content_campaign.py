@@ -56,7 +56,7 @@ class ContentCampaignDependencies:
         self.persistence = persistence
 
 
-def build_content_campaign_workflow(deps: ContentCampaignDependencies):
+def build_content_campaign_workflow(deps: ContentCampaignDependencies, *, checkpointer=None):
     graph = StateGraph(ContentCampaignState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -344,4 +344,4 @@ def build_content_campaign_workflow(deps: ContentCampaignDependencies):
     )
     graph.add_edge("error_cancelled", END)
 
-    return graph.compile(checkpointer=MemorySaver())
+    return graph.compile(checkpointer=checkpointer if checkpointer is not None else MemorySaver())

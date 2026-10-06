@@ -26,3 +26,38 @@ jobs:
 
       - name: Test
         run: pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install UI
+        working-directory: web
+        run: npm ci
+      - name: UI tests and production build
+        working-directory: web
+        run: |
+          npm test
+          npm run build
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install runtime and browser
+        run: |
+          pip install -e ".[dev]"
+          python -m playwright install --with-deps chromium
+      - name: Browser acceptance
+        run: |
+          python -m uvicorn amauxboze.control_plane.app:application --factory --host 127.0.0.1 --port 8000 > /tmp/tom-api.log 2>&1 &
+          python scripts/wait_for_app.py
+          python scripts/smoke_app.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-screenshots
+          path: .runtime/screenshots/

@@ -23,15 +23,18 @@ class ObsidianKnowledgeProvider(KnowledgeProvider):
         results: list[KnowledgeDocument] = []
         needle = query.query.lower()
 
-        scopes = [root / scope for scope in query.scopes] if query.scopes else [root]
+        scopes = [self.adapter._resolve_inside_vault(scope) for scope in query.scopes] if query.scopes else [root]
 
         for scope in scopes:
             if not scope.exists():
                 continue
             for path in scope.rglob("*.md"):
                 try:
+                    path = self.adapter._resolve_inside_vault(path)
+                    if path.stat().st_size > 500000:
+                        continue
                     content = path.read_text(encoding="utf-8")
-                except OSError:
+                except (OSError, PermissionError, UnicodeError):
                     continue
                 if needle in content.lower() or needle in path.name.lower():
                     rel = str(path.relative_to(root)).replace("\\", "/")
@@ -57,6 +60,12 @@ class ObsidianKnowledgeProvider(KnowledgeProvider):
         if not root.exists():
             return docs
         for path in root.rglob("*.md"):
+            try:
+                path = self.adapter._resolve_inside_vault(path)
+                if path.stat().st_size > 500000:
+                    continue
+            except PermissionError:
+                continue
             rel = str(path.relative_to(self.adapter.vault_root)).replace("\\", "/")
             docs.append(KnowledgeDocument(path=rel, content=""))
         return docs

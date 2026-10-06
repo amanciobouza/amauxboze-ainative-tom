@@ -11,6 +11,8 @@ def test_loads_agent_manifests():
     assert "elena" in agents
     assert "kai" in agents
     assert agents["lucien"].role == "Head of Product & Watch Design"
+    assert agents["lucien"].communication_instructions == []
+    assert agents["elena"].communication_instructions
 
 
 def test_rejects_unauthorized_skill():

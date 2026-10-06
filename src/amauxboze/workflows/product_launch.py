@@ -58,7 +58,7 @@ class ProductLaunchDependencies:
         self.persistence = persistence
 
 
-def build_product_launch_workflow(deps: ProductLaunchDependencies):
+def build_product_launch_workflow(deps: ProductLaunchDependencies, *, checkpointer=None):
     graph = StateGraph(ProductLaunchState)
 
     def run(agent: str, skill: str, payload: dict[str, Any]) -> dict[str, Any]:
@@ -396,4 +396,4 @@ def build_product_launch_workflow(deps: ProductLaunchDependencies):
     )
     graph.add_edge("error_cancelled", END)
 
-    return graph.compile(checkpointer=MemorySaver())
+    return graph.compile(checkpointer=checkpointer if checkpointer is not None else MemorySaver())

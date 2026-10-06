@@ -24,13 +24,19 @@ def test_minimal_workflow_interrupt_and_resume(tmp_path: Path, monkeypatch):
     router = ModelRouter()
     monkeypatch.setattr(router, "lm_studio_available", lambda: True)
 
+    prompts = []
+
+    def execute_model(provider, prompt):
+        prompts.append(prompt)
+        return "Decision brief generated locally."
+
     deps = MinimalWorkflowDependencies(
         agents=agents,
         skills=skills,
         authorization=AuthorizationService(agents, skills),
         obsidian=ObsidianAdapter(tmp_path),
         router=router,
-        execute_model=lambda provider, prompt: "Decision brief generated locally.",
+        execute_model=execute_model,
     )
 
     graph = build_minimal_foundation_workflow(deps)
@@ -51,6 +57,10 @@ def test_minimal_workflow_interrupt_and_resume(tmp_path: Path, monkeypatch):
     )
 
     assert "__interrupt__" in first
+    assert first["approval_status"] == "pending"
+    assert len(prompts) == 1
+    for instruction in agents.get("elena").communication_instructions:
+        assert instruction in prompts[0]
 
     resumed = graph.invoke(Command(resume="approve"), config=config)
     assert resumed["approval_status"] == "approved"

@@ -45,6 +45,7 @@ class ToolResult(BaseModel):
 class ModelRequest(BaseModel):
     task: str
     prompt: str
+    output_schema: dict[str, Any] | None = None
     privacy: str = "standard"
     reasoning: str = "medium"
     creativity: str = "medium"

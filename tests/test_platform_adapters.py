@@ -1,9 +1,20 @@
 from pathlib import Path
 
+import pytest
+
 from amauxboze.adapters import ObsidianAdapter
 from amauxboze.contracts import KnowledgeQuery, KnowledgeWrite, ToolRequest
 from amauxboze.platform import ObsidianKnowledgeProvider, RegistryPolicyEngine
 from amauxboze.registries import AgentRegistry, AuthorizationService, SkillRegistry
+
+
+def test_knowledge_search_rejects_escaped_scope(tmp_path):
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    (tmp_path / "private.md").write_text("private", encoding="utf-8")
+    provider = ObsidianKnowledgeProvider(ObsidianAdapter(vault))
+    with pytest.raises(PermissionError):
+        provider.search(KnowledgeQuery(query="private", scopes=[".. ".strip()]))
 
 
 def test_obsidian_knowledge_provider_read_write_search(tmp_path: Path):

@@ -1,0 +1,7 @@
+# Design
+
+Use an optional list of communication instructions on AgentManifest, defaulting to empty for compatibility. Elena's manifest owns runtime instructions; her Markdown role explains the same intent. The foundation prompt reads the registered identity, mission and instructions instead of hard-coding Elena's identity.
+
+Directness means challenging assumptions and excuses, prioritizing measurable outcomes, and giving explicit recommendations with actionable next steps. It does not authorize insults, fabricated evidence or approval bypasses. Inspiration is expressed through original behavioral rules rather than impersonation or copied catchphrases.
+
+The five business workflows keep their existing injected callback contract. ModelStageExecutor implements that contract, loads the agent and skill from registries for every invocation, checks skill permission and input/output schemas, and invokes ModelGateway with role guidance, task payload and the output schema. Model routing follows skill requirements. Guidance remains outside the skill payload. Strict JSON object output is required; malformed responses fail through existing workflow recovery. No tool execution or approvals happen inside this executor. Hosts explicitly inject it instead of their fixture callbacks. RouterModelGateway currently returns empty content, so a working model gateway implementation must be supplied; empty output is a failure, never fabricated success.

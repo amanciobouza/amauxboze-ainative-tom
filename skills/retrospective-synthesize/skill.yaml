@@ -1,0 +1,56 @@
+id: retrospective-synthesize
+version: 0.1.0
+purpose: Prepare at most three measurable improvements with owner_id, hypothesis,
+  baseline, metric, target and risk. Mark missing baseline explicitly. Software changes
+  require an openspec_ref and separate authorization; no production edits.
+inputs:
+  type: object
+  required:
+  - contributions
+  - run_refs
+  properties:
+    contributions:
+      type: array
+      items:
+        type: object
+    run_refs:
+      type: array
+      items:
+        type: string
+outputs:
+  type: object
+  required:
+  - improvements
+  properties:
+    improvements:
+      type: array
+      items:
+        type: object
+        required:
+        - owner_id
+        - hypothesis
+        - baseline
+        - metric
+        - target
+        - risk
+        properties:
+          owner_id:
+            type: string
+          hypothesis:
+            type: string
+          baseline:
+            type: string
+          metric:
+            type: string
+          target:
+            type: string
+          risk:
+            type: string
+context: []
+allowed_tools: []
+model:
+  privacy: local_only
+  reasoning: high
+  creativity: low
+  preferred_providers:
+  - lm_studio

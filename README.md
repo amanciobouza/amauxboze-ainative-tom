@@ -2,6 +2,17 @@
 
 This repository contains the software, agent definitions, skills, workflows, schemas, tests, and technical architecture for operating Amaux Bozé as an AI-native micro watch brand.
 
+## Run the local application
+
+```powershell
+.\run-local.ps1
+```
+
+Open the full Company OS at `http://127.0.0.1:3000`.
+Use `-Production` to serve the built app on port 8000 instead.
+See [Local application guide](docs/LocalApplication.md) for features, live models,
+simulation, persistence, approval semantics and verification.
+
 ## Project constants
 
 - **Obsidian Vault:** `C:\Users\amanc\OneDrive\ObsidianVaults\Amaux Bozé`

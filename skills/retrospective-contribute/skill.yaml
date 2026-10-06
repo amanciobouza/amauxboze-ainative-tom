@@ -1,0 +1,45 @@
+id: retrospective-contribute
+version: 0.1.0
+purpose: Reflect on selected run evidence. Separate observed facts, interpretation
+  and proposal; explicitly state evidence gaps. Cite only provided run_refs.
+inputs:
+  type: object
+  required:
+  - evidence
+  - run_refs
+  properties:
+    evidence:
+      type: string
+    run_refs:
+      type: array
+      items:
+        type: string
+outputs:
+  type: object
+  required:
+  - evidence_refs
+  - observation
+  - interpretation
+  - proposal
+  - evidence_gap
+  properties:
+    evidence_refs:
+      type: array
+      items:
+        type: string
+    observation:
+      type: string
+    interpretation:
+      type: string
+    proposal:
+      type: string
+    evidence_gap:
+      type: string
+context: []
+allowed_tools: []
+model:
+  privacy: local_only
+  reasoning: high
+  creativity: low
+  preferred_providers:
+  - lm_studio

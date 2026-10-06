@@ -62,9 +62,12 @@ def build_minimal_foundation_workflow(deps: MinimalWorkflowDependencies):
             )
         )
 
+        agent = deps.agents.get("elena")
+        communication = "\n".join(agent.communication_instructions)
         prompt = (
-            "You are Elena, Chief of Staff for Amaux Bozé. "
+            f"You are {agent.name}, {agent.role}. {agent.mission} "
             "Prepare a concise founder decision brief.\n\n"
+            f"Communication instructions:\n{communication}\n\n"
             f"Company context:\n{payload.get('context', '')}\n\n"
             f"Question: {skill_input['question']}\n"
             f"Options: {skill_input['options']}\n"

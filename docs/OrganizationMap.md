@@ -8,14 +8,11 @@
                             │
         ┌───────────────────┼────────────────────┐
         │                   │                    │
-      Elena               Lucien               Élodie
-  Chief of Staff      Product & Watch       Brand & Narrative
-        │                   │                    │
-        ├──────────┬────────┼────────┬───────────┤
-        │          │        │        │           │
-      Nora       Marc      Maya    Sophie       Kai
-     Market     Growth    Content  Customer   Technology
- Intelligence  Commerce   Social   Community   AI Automation
+  All eight agents report directly to Amancio:
+  Elena · Lucien · Élodie · Nora · Marc · Maya · Sophie · Kai
+
+  Elena coordinates cross-functional execution; coordination is not
+  a separate reporting line and grants no additional approval rights.
 ```
 
 ## Operating Principle
